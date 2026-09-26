@@ -33,9 +33,17 @@ explanation. Don't bring over evidence paths, tools or anything else from win-de
   enforces it.
 - `ips/` and `dist/index.html` are **generated**; run `python3 build.py`, never hand-edit
   them. `build.py --check` (CI) fails when they are stale.
+- Every push to `main` that passes the check publishes `dist/` to
+  <https://colonization-re.github.io/win-patches/> as committed, so the page players use
+  is always the file in the repo.
 - `web/vendor/col.css` is [web-ui](https://github.com/colonization-re/web-ui) pinned by
-  `col-css.json`. Don't edit it. Page-local styles in `web/index.html` are namespaced
-  `wp-`.
+  `col-css.json`. Don't edit it. It is the page's stylesheet: use a `col-` class where one
+  exists, and namespace the few page-local styles in `web/index.html` `wp-`. To move the
+  pin, replace the file with another release's `col.css` asset (`gh release download TAG
+  -R colonization-re/web-ui -p col.css -D web/vendor --clobber`), then update `tag`,
+  `sha256`, `bytes` and `vendored` in `col-css.json`.
+- The page must not fetch anything. Its CSP (`default-src 'none'`) enforces that, so keep
+  CSS, data and scripts inline.
 - **Keep `status` honest.** "Seen in play" means a person saw it in the running game.
   Emulator checks and byte checks are not that.
 

@@ -20,10 +20,12 @@ Keep a copy of your original `COLONIZE.EXE` whichever way you choose.
 
 ### In a browser
 
-Open [`dist/index.html`](dist/index.html). It is one self-contained file and works from
-disk. Choose your `COLONIZE.EXE`, tick the patches you want and download the result.
-Everything happens in the page: the file is never uploaded, and the page makes no network
-requests at all.
+Go to **<https://colonization-re.github.io/win-patches/>**, or open
+[`dist/index.html`](dist/index.html) from a checkout: the site serves that same file
+unchanged. It is one self-contained file and works from disk. Choose your `COLONIZE.EXE`,
+tick the patches you want and download the result. Everything happens in the page: the
+file is never uploaded. The page makes no network requests at all, and its
+Content-Security-Policy tells the browser to refuse any it might try.
 
 Loading an already patched file shows which patches it carries, and unticking one takes
 it out again.

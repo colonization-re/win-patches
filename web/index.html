@@ -3,6 +3,10 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- The page may run its own inline script and styles and fetch nothing at all, so the
+     browser itself stops it sending the game file anywhere, served from GitHub Pages or
+     opened from disk. -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; base-uri 'none'; form-action 'none'">
 <title>Colonization patches</title>
 <!-- GENERATED into dist/index.html by build.py: col.css and the patches are inlined, so
      the page opens from file:// and asks the network for nothing. Edit this template. -->
@@ -12,9 +16,7 @@
 .wp-drop.is-over { outline: var(--bw-2) dashed var(--line); outline-offset: 4px; }
 .wp-patch { display: grid; gap: 6px; padding: 14px 0; border-top: var(--bw) solid var(--rule); }
 .wp-patch:first-of-type { border-top: 0; padding-top: 4px; }
-.wp-patch .col-check { margin: 0; }
 .wp-patch p { margin: 0; }
-.wp-head { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
 .wp-why { white-space: pre-line; }
 .wp-hash { overflow-wrap: anywhere; }
 </style>
@@ -76,8 +78,10 @@
 
   <p class="col-foot col-dim">No browser? <code>python3 patch.py apply --all --exe
     COLONIZE.EXE --in-place</code> does the same from a terminal, and every patch is also an
-    <code>.ips</code> file. See the
-    <a href="https://github.com/colonization-re/win-patches">README</a>.</p>
+    <a href="https://github.com/colonization-re/win-patches/tree/main/ips">IPS file</a>. See
+    the <a href="https://github.com/colonization-re/win-patches">README</a>.
+    This page is the repository's <code>dist/index.html</code>, served as it is: save it
+    and it works offline.</p>
 </main>
 
 <script>
@@ -121,7 +125,7 @@ function renderList() {
     const row = document.createElement("div");
     row.className = "wp-patch";
     const head = document.createElement("div");
-    head.className = "wp-head";
+    head.className = "col-row";
     const label = document.createElement("label");
     label.className = "col-check";
     const cb = document.createElement("input");
