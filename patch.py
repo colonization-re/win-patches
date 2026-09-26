@@ -364,10 +364,20 @@ def cmd_status(patches, a):
     b = open(a.exe, 'rb').read()
     segs = segments(b)
     print(f'{a.exe}  sha256 {sha(b)[:16]}...')
+    known = False
     for p in patches.values():
-        st, seen = state(p, b, segs)
+        try:
+            st, seen = state(p, b, segs)
+        except SystemExit as e:             # an address that does not resolve here
+            why = str(e)[len('patch: '):] if str(e).startswith('patch: ') else str(e)
+            print(f'  {p["name"]:24} does not fit this file -- {why}')
+            continue
+        known |= st in ('original', 'applied')
         print(f'  {p["name"]:24} {st}' + ('' if st in ('original', 'applied')
                                          else f'  {seen}'))
+    if sha(b) != next(iter(patches.values()))['target']['sha256'] and not known:
+        print('  this is not the build these patches were made on (see README, '
+              '"Which COLONIZE.EXE")')
 
 
 def transform(patches, a, forward):
