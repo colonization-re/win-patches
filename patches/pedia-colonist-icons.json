@@ -1,0 +1,55 @@
+{
+  "name": "pedia-colonist-icons",
+  "kind": "fix",
+  "title": "Colonopedia: the Free Colonist page draws its three extra icons side by side",
+  "why": [
+    "PediaWin_DoUnitArticle (1060:3a6d) draws the Free Colonist page's icon row: one colonist,",
+    "then three more (specs 0x19..0x1b) in a loop, then the 21 experts. The three-icon loop",
+    "counts them into `col` but never advances `x` (register DI), so all three land on the",
+    "second square -- and so does the first expert, which is drawn before its loop steps x.",
+    "Four figures share one square and only the last is visible. `col` proves the intent: it",
+    "leaves that loop at 4, and the expert loop wraps at 17 as if four positions were used.",
+    "",
+    "Same-length fix: inside the loop, `inc word [bp-0xc]` (col++) becomes `add di,0x20`",
+    "(x += 32, the step every other icon on the page uses), and col starts at 4 instead of 1.",
+    "col is not read inside the loop, so it leaves the loop at 4 exactly as before."
+  ],
+  "test": [
+    "Start or load any game, open the Colonopedia, Units, Free Colonist.",
+    "Before: the second square holds four overlapped figures (the last drawn on top), so the",
+    "first row shows 14 distinct squares. After: the colonist, the three variants and the",
+    "experts each get their own square; the first row is 17 icons wide (x = 20..532) and",
+    "wraps, as the expert loop was written to do. Check the 17th icon is inside the page."
+  ],
+  "status": "bytes and behaviour checked; not yet confirmed in play",
+  "target": {
+    "file": "COLONIZE.EXE",
+    "sha256": "59a0e173452924603112cf410483021c02ef0cd3512e310d8966b21e0c176291"
+  },
+  "sites": [
+    {
+      "at": "1060:3c4c",
+      "file_offset": "0x3304c",
+      "expect": "01",
+      "new": "04",
+      "insn": {
+        "at": "1060:3c49",
+        "before": "mov word [bp-0xc],0x1",
+        "after": "mov word [bp-0xc],0x4"
+      },
+      "note": "col = 1 -> col = 4, before the loop"
+    },
+    {
+      "at": "1060:3c96",
+      "file_offset": "0x33096",
+      "expect": "ff46f4",
+      "new": "83c720",
+      "insn": {
+        "at": "1060:3c96",
+        "before": "inc word [bp-0xc]",
+        "after": "add di,0x20"
+      },
+      "note": "col++ -> x += 0x20, inside the loop"
+    }
+  ]
+}

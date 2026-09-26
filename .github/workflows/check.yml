@@ -1,0 +1,19 @@
+name: check
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: nasm, to re-assemble code sites
+        run: sudo apt-get update && sudo apt-get install -y nasm
+      - name: manifests consistent, generated files current
+        run: python3 build.py --check
+      - name: the tools still start
+        run: |
+          python3 patch.py list
+          python3 -m py_compile patch.py build.py

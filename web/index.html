@@ -1,0 +1,273 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Colonization patches</title>
+<!-- GENERATED into dist/index.html by build.py: col.css and the patches are inlined, so
+     the page opens from file:// and asks the network for nothing. Edit this template. -->
+<style>/*COL_CSS*/</style>
+<style>
+/* page-local, namespaced wp- ; everything else is col.css */
+.wp-drop.is-over { outline: var(--bw-2) dashed var(--line); outline-offset: 4px; }
+.wp-patch { display: grid; gap: 6px; padding: 14px 0; border-top: var(--bw) solid var(--rule); }
+.wp-patch:first-of-type { border-top: 0; padding-top: 4px; }
+.wp-patch .col-check { margin: 0; }
+.wp-patch p { margin: 0; }
+.wp-head { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.wp-why { white-space: pre-line; }
+.wp-hash { overflow-wrap: anywhere; }
+</style>
+</head>
+<body class="col-ruled">
+<div class="col-bar">
+  <div class="col-bar-in">
+    <a class="col-brand" href="https://github.com/colonization-re/win-patches"><span class="col-brand-mark"></span> win-patches</a>
+    <span class="col-badge col-badge--line">Colonization for Windows</span>
+    <div class="col-push col-segmented" id="theme">
+      <button data-t="light">Light</button>
+      <button data-t="dark">Dark</button>
+      <button data-t="auto" class="is-active">Auto</button>
+    </div>
+  </div>
+</div>
+
+<main class="col-wrap col-stack">
+  <div class="col-plate">
+    <p class="col-eyebrow">Sid Meier's Colonization · Windows · 1995</p>
+    <h1>Patch your own COLONIZE.EXE</h1>
+    <p class="col-lead">Tick the fixes you want and download the result. This page changes a
+      few bytes in your copy of the game, in your browser: the file is never uploaded.</p>
+    <dl class="col-plate-meta">
+      <div><dt>Patches</dt><dd id="count">–</dd></div>
+      <div><dt>For</dt><dd>the updated 1995 release</dd></div>
+      <div><dt>SHA-256</dt><dd class="col-mono" id="target">–</dd></div>
+    </dl>
+  </div>
+
+  <section class="col-card wp-drop" id="drop">
+    <p class="col-eyebrow">1 · Your game file</p>
+    <div class="col-row">
+      <label class="col-btn col-btn--outline col-btn--file">
+        Choose COLONIZE.EXE<input type="file" id="file" accept=".exe,.EXE"></label>
+      <span class="col-meta">or drop it on this box. It is in the folder you installed
+        the game to.</span>
+    </div>
+    <p class="col-note col-note--line" id="verdict" style="margin-bottom:0"><span>No file
+      yet. Nothing is read until you choose one.</span></p>
+  </section>
+
+  <section class="col-card">
+    <p class="col-eyebrow">2 · Patches</p>
+    <div id="patches"></div>
+  </section>
+
+  <section class="col-card">
+    <p class="col-eyebrow">3 · Download</p>
+    <div class="col-row">
+      <button class="col-btn" id="download" disabled>Download patched COLONIZE.EXE</button>
+      <span class="col-meta" id="plan">Choose your file first.</span>
+    </div>
+    <p class="col-dim" style="margin:12px 0 0">Put the downloaded file in the game folder in
+      place of <code>COLONIZE.EXE</code>, and keep your original somewhere safe. To undo a patch,
+      load the patched file here again and untick it.</p>
+    <p class="col-meta wp-hash" id="result"></p>
+  </section>
+
+  <p class="col-foot col-dim">No browser? <code>python3 patch.py apply --all --exe
+    COLONIZE.EXE --in-place</code> does the same from a terminal, and every patch is also an
+    <code>.ips</code> file. See the
+    <a href="https://github.com/colonization-re/win-patches">README</a>.</p>
+</main>
+
+<script>
+"use strict";
+const PATCHES = /*PATCHES*/;
+const TARGET = PATCHES[0].target.sha256;
+const KIND = { fix: "col-badge--ok", feature: "col-badge--brand", qol: "col-badge--line" };
+const $ = (id) => document.getElementById(id);
+let input = null, inputName = "COLONIZE.EXE", states = {};
+
+const unhex = (h) => Uint8Array.from(h.match(/../g), (x) => parseInt(x, 16));
+const same = (a, b) => a.length === b.length && a.every((v, i) => v === b[i]);
+for (const p of PATCHES) for (const s of p.sites) {
+  s.at_ = parseInt(s.file_offset, 16); s.expect_ = unhex(s.expect); s.new_ = unhex(s.new);
+}
+
+async function sha256(bytes) {
+  if (!(window.crypto && crypto.subtle)) return null;       // not a secure context
+  const d = new Uint8Array(await crypto.subtle.digest("SHA-256", bytes));
+  return Array.from(d, (b) => b.toString(16).padStart(2, "0")).join("");
+}
+
+// A site holds either the bytes the original has there or the bytes the patch puts
+// there. Anything else is a different build, and that patch is not offered.
+function state(bytes, p) {
+  const seen = p.sites.map((s) => {
+    const have = bytes.subarray(s.at_, s.at_ + s.expect_.length);
+    return same(have, s.expect_) ? "original" : same(have, s.new_) ? "applied" : "mismatch";
+  });
+  if (seen.includes("mismatch")) return "mismatch";
+  if (seen.every((x) => x === "original")) return "original";
+  if (seen.every((x) => x === "applied")) return "applied";
+  return "partial";
+}
+
+function renderList() {
+  const box = $("patches");
+  box.textContent = "";
+  for (const p of PATCHES) {
+    const st = states[p.name];
+    const row = document.createElement("div");
+    row.className = "wp-patch";
+    const head = document.createElement("div");
+    head.className = "wp-head";
+    const label = document.createElement("label");
+    label.className = "col-check";
+    const cb = document.createElement("input");
+    cb.type = "checkbox"; cb.dataset.name = p.name;
+    // every patch that fits is ticked: already in the file (untick to remove) or not
+    // yet (untick to leave out). One that does not fit is off and cannot be ticked.
+    cb.disabled = !!st && (st === "mismatch" || st === "partial");
+    cb.checked = !cb.disabled;
+    cb.addEventListener("change", plan);
+    const title = document.createElement("span");
+    const strong = document.createElement("strong");
+    strong.textContent = p.title;
+    title.append(strong);
+    label.append(cb, title);
+    const kind = document.createElement("span");
+    kind.className = "col-badge " + (KIND[p.kind] || "");
+    kind.textContent = p.kind;
+    head.append(label, kind);
+    if (st) {
+      const b = document.createElement("span");
+      b.className = "col-badge " + ({ original: "", applied: "col-badge--ok" }[st] ?? "col-badge--danger");
+      b.textContent = { original: "not in your file", applied: "already in your file",
+                        mismatch: "does not fit this file", partial: "half applied" }[st];
+      head.append(b);
+    }
+    const see = document.createElement("p");
+    see.className = "col-dim";
+    see.textContent = p.test.join(" ");
+    const more = document.createElement("details");
+    more.className = "col-disclosure";
+    const sum = document.createElement("summary");
+    sum.textContent = "How it works";
+    const why = document.createElement("p");
+    why.className = "wp-why col-dim";
+    // manifest lines are wrapped prose; an empty line separates paragraphs
+    why.textContent = p.why.join("\n").split(/\n\s*\n/)
+      .map((para) => para.replace(/\n/g, " ")).join("\n\n");
+    more.append(sum, why);
+    if (p.known_limits) {
+      const lim = document.createElement("p");
+      lim.className = "col-dim";
+      lim.textContent = "Limits: " + p.known_limits.join(" ");
+      more.append(lim);
+    }
+    row.append(head, see, more);
+    box.append(row);
+  }
+}
+
+function wanted() {
+  return Object.fromEntries(Array.from(document.querySelectorAll("#patches input"),
+    (cb) => [cb.dataset.name, cb.checked && !cb.disabled]));
+}
+
+function changes() {
+  const want = wanted(), out = [];
+  for (const p of PATCHES) {
+    const st = states[p.name];
+    if (want[p.name] && st === "original") out.push([p, "apply"]);
+    if (!want[p.name] && st === "applied") out.push([p, "revert"]);
+  }
+  return out;
+}
+
+function plan() {
+  if (!input) return;
+  const c = changes();
+  $("download").disabled = c.length === 0;
+  $("plan").textContent = c.length === 0 ? "Nothing to change: the file already matches your ticks."
+    : c.map(([p, how]) => (how === "apply" ? "add " : "remove ") + p.name).join(", ");
+}
+
+function say(kind, html) {
+  const v = $("verdict");
+  v.className = "col-note " + kind;
+  v.innerHTML = "<span>" + html + "</span>";
+}
+
+async function load(file) {
+  const bytes = new Uint8Array(await file.arrayBuffer());
+  inputName = file.name || "COLONIZE.EXE";
+  if (bytes[0] !== 0x4d || bytes[1] !== 0x5a) {
+    input = null; states = {}; renderList(); plan();
+    return say("col-note--danger", "<strong>Not a Windows program.</strong> Choose the " +
+      "<code>COLONIZE.EXE</code> from the game folder.");
+  }
+  input = bytes;
+  states = Object.fromEntries(PATCHES.map((p) => [p.name, state(bytes, p)]));
+  const hash = await sha256(bytes);
+  const fits = Object.values(states).every((s) => s === "original" || s === "applied");
+  const have = PATCHES.filter((p) => states[p.name] === "applied").map((p) => p.name);
+  if (hash === TARGET) {
+    say("col-note--ok", "<strong>This is the supported build.</strong> Every patch applies.");
+  } else if (fits && have.length) {
+    say("col-note--ok", "<strong>The supported build, already patched</strong> with " +
+      have.join(", ") + ". Untick a patch to take it out again.");
+  } else if (fits) {
+    say("col-note--warn", "<strong>The bytes fit, but the checksum is not the one these " +
+      "patches were made on.</strong> Proceed only if you know why.");
+  } else {
+    say("col-note--danger", "<strong>This is a different build of the game.</strong> The " +
+      "patches were made on the updated 1995 release (MicroProse's update leaves the old " +
+      "file beside it as <code>COLONIZE.$00</code>). Patches that do not fit are switched off.");
+  }
+  $("result").textContent = hash ? "Your file: SHA-256 " + hash : "";
+  renderList();
+  plan();
+}
+
+$("download").addEventListener("click", async () => {
+  const out = input.slice();
+  for (const [p, how] of changes())
+    for (const s of p.sites) out.set(how === "apply" ? s.new_ : s.expect_, s.at_);
+  const hash = await sha256(out);
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(new Blob([out], { type: "application/octet-stream" }));
+  a.download = /\.exe$/i.test(inputName) ? inputName : "COLONIZE.EXE";
+  document.body.append(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(a.href), 10000);
+  $("result").textContent = (hash ? "Downloaded: SHA-256 " + hash : "Downloaded.") +
+    "  Load it here again to check which patches it carries.";
+});
+
+$("file").addEventListener("change", (e) => e.target.files[0] && load(e.target.files[0]));
+const drop = $("drop");
+drop.addEventListener("dragover", (e) => { e.preventDefault(); drop.classList.add("is-over"); });
+drop.addEventListener("dragleave", () => drop.classList.remove("is-over"));
+drop.addEventListener("drop", (e) => {
+  e.preventDefault(); drop.classList.remove("is-over");
+  if (e.dataTransfer.files[0]) load(e.dataTransfer.files[0]);
+});
+
+function theme(t) {
+  if (t === "auto") document.documentElement.removeAttribute("data-theme");
+  else document.documentElement.dataset.theme = t;
+  for (const b of document.querySelectorAll("#theme button"))
+    b.classList.toggle("is-active", b.dataset.t === t);
+  try { localStorage.setItem("wp-theme", t); } catch (e) { /* private window */ }
+}
+for (const b of document.querySelectorAll("#theme button"))
+  b.addEventListener("click", () => theme(b.dataset.t));
+try { theme(localStorage.getItem("wp-theme") || "auto"); } catch (e) { theme("auto"); }
+
+$("count").textContent = PATCHES.length;
+$("target").textContent = TARGET.slice(0, 16) + "…";
+renderList();
+</script>
+</body>
+</html>

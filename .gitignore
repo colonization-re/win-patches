@@ -1,0 +1,13 @@
+# Game files never belong here: players patch their own copy.
+*.exe
+*.EXE
+*.orig
+*.ORIG
+*.$00
+*.dll
+*.DLL
+*.sav
+*.SAV
+
+__pycache__/
+.DS_Store

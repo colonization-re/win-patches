@@ -1,0 +1,53 @@
+{
+  "name": "cheat-picture-viewer",
+  "kind": "feature",
+  "title": "Cheat menu: \"Show Colony Sites\" (an empty stub) becomes the hidden Picture Viewer",
+  "why": [
+    "The developers' picture viewer, debug_picture_viewer (1040:46aa), asks \"View which",
+    "picture #?\" and shows any of 107 CVPC pictures or SPRT sprites in a 640x480 window. Its",
+    "command (811) is dispatched but no menu item carries it. Meanwhile the Cheat menu's",
+    "\"Show Colony Sites\" (809) calls show_colony_sites (1048:b92c), whose body is empty.",
+    "",
+    "In the command dispatcher the 809 arm (`push cs / call near show_colony_sites /",
+    "jmp near exit`) sits 14 bytes before the 811 arm (`call far debug_picture_viewer /",
+    "jmp near exit`). A 2-byte `jmp short` at the head of the 809 arm lands on the 811 arm,",
+    "so no relocation is added. The menu label is a DGROUP string used only by",
+    "cheat_menu_toggle; it is rewritten in place, NUL-padded to its original 18 bytes."
+  ],
+  "test": [
+    "In a game, type Ctrl+W, Ctrl+I, Ctrl+N to raise the Cheat menu.",
+    "Cheat > Picture Viewer. Enter a number 0..106 (e.g. 5). A 640x480 window titled",
+    "\"Close Window to Reset Palette\" shows the picture; close it and the map's colours return.",
+    "A number outside 0..106 closes at once. The other Cheat items are unchanged."
+  ],
+  "status": "bytes and behaviour checked; not yet confirmed in play",
+  "target": {
+    "file": "COLONIZE.EXE",
+    "sha256": "59a0e173452924603112cf410483021c02ef0cd3512e310d8966b21e0c176291"
+  },
+  "sites": [
+    {
+      "at": "1048:c93f",
+      "file_offset": "0xea33f",
+      "expect": "0ee8",
+      "new": "eb0c",
+      "insn": {
+        "at": "1048:c93f",
+        "before": "push cs",
+        "after": "jmp 0xc94d"
+      },
+      "note": "809 arm -> jump to the 811 arm at 1048:c94d"
+    },
+    {
+      "at": "1108:2338",
+      "file_offset": "0x62738",
+      "expect": "53686f7720436f6c6f6e7920536974657300",
+      "new": "506963747572652056696577657200000000",
+      "text": {
+        "before": "Show Colony Sites",
+        "after": "Picture Viewer"
+      },
+      "note": "the Cheat menu label, DGROUP:0x2338"
+    }
+  ]
+}

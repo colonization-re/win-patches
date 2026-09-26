@@ -1,0 +1,124 @@
+{
+  "name": "water-cycling",
+  "kind": "feature",
+  "title": "Water Color Cycling: river currents and beach surf move, as in the DOS version",
+  "why": [
+    "The DOS build rotates 8 palette entries (CYCLE.DAT: 0x78..0x7F) from the timer interrupt, and",
+    "only a few pixels use them: a line down each river (PHYS0.SS frames 1..31), the surf inside the",
+    "beach pieces (150..153) and sparkles on the sea lane -- rivers flow, surf moves, the open sea",
+    "stays still.",
+    "",
+    "The Windows water sheet, picture 0xcc, was drawn the same way. init_water_sprites installs it",
+    "at palette 40 with 102 colours instead of 96; its extra raw 96..101 -- game entries 136..141 --",
+    "sit only on the river centres of its sprites 0..31, the surf of 150..153 and the fish, and it",
+    "cuts exactly those cells over sheet 201's plain rivers and beach (its table at SEG20:0x4526 is",
+    "g_art_base[28]). The Game Options item \"Water Color Cycling\" and its saved bit",
+    "(GAMEFLAG_NO_WATER_CYCLING, 0x100 of SEG20:0x7784) survived too. Nothing ever read the bit or",
+    "rotated the entries.",
+    "",
+    "This patch rotates entries 136..141 up by one, as DOS does, on every cursor blink of",
+    "GameBrains_DoHuman's idle phase (25 ticks, 0.42 s), through the game's own dead palette_rotate;",
+    "bumps the palette's seed so GRPort_ColorSync re-sends the WinG colour table; and re-blits the",
+    "map view. Off in Game Options, off here.",
+    "",
+    "No byte changes length. The code is written over the dead palette_cross_fade (1068:0d94);",
+    "the three relocation records whose sites fell inside those bytes are moved onto the new",
+    "code's three far operands; the two records behind DoHuman's calls to",
+    "MiniWin_HighlightActiveUnit are pointed at the hook, which runs the tick and then jumps",
+    "to MiniWin_HighlightActiveUnit with the caller's stack untouched."
+  ],
+  "known_limits": [
+    "Water moves only while the game waits for input on the map (the cursor blink, 0.42 s a step --",
+    "DOS steps every ~0.29 s from the timer), not during unit moves or AI turns. On a real",
+    "256-colour palette device the colours reach the screen through the WinG colour table by WinG's",
+    "translated blit; that mode is untested."
+  ],
+  "test": [
+    "Start or load a game and leave the map idle: the centre line of every river and the surf",
+    "along coasts glint and move, about twice a second; open sea, lakes, marsh and the fog-of-war",
+    "edge do not move. Game Options > Water Color Cycling off: it stops. Open and close a colony:",
+    "nothing else changes."
+  ],
+  "status": "seen in play 2026-09-26 (Wine 11 + otvdm on macOS): river currents and beach surf move, the rest of the water does not",
+  "target": {
+    "file": "COLONIZE.EXE",
+    "sha256": "59a0e173452924603112cf410483021c02ef0cd3512e310d8966b21e0c176291"
+  },
+  "sites": [
+    {
+      "at": "1068:0d94",
+      "file_offset": "0x102b94",
+      "expect": "8cd09045558bec1e8ed883ec0c56578b7e0a0bff7c0ac45e062639bf0e047d20660fbfc766501e68772b68000068c02a0ee8228783c40c5f5e8d66fe1f5d4dcbc45e0626ffb718049affff000083c4028956f88946f6c45e0626ffb71a049affff000083c4028956f48946f233f6e944018bc6990346f683d200b9",
+      "new": "1e8cd08ed8b8ffff8ec026f6068577017538506a016a066888005068ac010ee8fff883c40a0726ff06b205750526ff06b205ff36524cff36504cff36464cff36444c9affff000083c4081feaffff0000cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+      "code": {
+        "source": "water-cycling.asm"
+      },
+      "note": "the hook and its tick, over the first 123 bytes of the dead palette_cross_fade, up to its first fixup the patch keeps (0e0f)"
+    },
+    {
+      "reloc": {
+        "segment": 14,
+        "index": 82,
+        "before": "FAR_ADDR -> 15:d073 @0ddd",
+        "after": "FAR_ADDR -> 13:0fdb @0de0",
+        "writes": "0de0"
+      },
+      "file_offset": "0x110b9e",
+      "expect": "0300dd0d0f0073d0",
+      "new": "0300e00d0d00db0f",
+      "note": "was palette_cross_fade's call at 0ddd; now the hook's closing jmp far MiniWin_HighlightActiveUnit"
+    },
+    {
+      "reloc": {
+        "segment": 14,
+        "index": 83,
+        "before": "SEGMENT additive -> 34:2ac0 @0dbf",
+        "after": "SEGMENT -> 20:0000 @0d9a",
+        "writes": "0d9a"
+      },
+      "file_offset": "0x110ba6",
+      "expect": "0204bf0d2200c02a",
+      "new": "02009a0d14000000",
+      "note": "was an additive SEGMENT fixup at 0dbf; now non-additive, SEG20's selector for mov ax,SEG20"
+    },
+    {
+      "reloc": {
+        "segment": 14,
+        "index": 81,
+        "before": "FAR_ADDR -> 15:d073 @0df3",
+        "after": "FAR_ADDR -> 9:07f1 @0dd7",
+        "writes": "0dd7"
+      },
+      "file_offset": "0x110b96",
+      "expect": "0300f30d0f0073d0",
+      "new": "0300d70d0900f107",
+      "note": "was palette_cross_fade's call at 0df3; now the tick's call far map_blit_tiles"
+    },
+    {
+      "reloc": {
+        "segment": 2,
+        "index": 710,
+        "before": "FAR_ADDR -> 13:0fdb @33dc",
+        "after": "FAR_ADDR -> 14:0d94 @33dc",
+        "writes": "33dc"
+      },
+      "file_offset": "0x77886",
+      "expect": "0300dc330d00db0f",
+      "new": "0300dc330e00940d",
+      "note": "GameBrains_DoHuman's first call to MiniWin_HighlightActiveUnit -> water_hook"
+    },
+    {
+      "reloc": {
+        "segment": 2,
+        "index": 811,
+        "before": "FAR_ADDR -> 13:0fdb @3418",
+        "after": "FAR_ADDR -> 14:0d94 @3418",
+        "writes": "3418"
+      },
+      "file_offset": "0x77bae",
+      "expect": "030018340d00db0f",
+      "new": "030018340e00940d",
+      "note": "GameBrains_DoHuman's second call to MiniWin_HighlightActiveUnit -> water_hook"
+    }
+  ]
+}

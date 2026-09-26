@@ -1,0 +1,38 @@
+{
+  "name": "intro-pages-5s",
+  "kind": "qol",
+  "title": "New game: the introduction pages advance every 5 seconds instead of every 10",
+  "why": [
+    "While a new map is generated, check_timer_tick (1040:843c) shows the ten pages of",
+    "opening_scene (credits, then who you are, which nation, which monarch) one every 600",
+    "ticks of MSGetTicks, which counts 60ths of a second: 10 s a page. new_game_setup then",
+    "spins on check_timer_tick(1) until the last page has shown, so a player who does not",
+    "click waits up to ~100 s. A click or key already dismisses the rest once the map is",
+    "done; this only shortens the wait for a player who reads rather than clicks.",
+    "",
+    "The threshold is the imm32 of `cmp eax,600`; 300 = 5 s keeps a one-line page readable."
+  ],
+  "test": [
+    "Start a new game and do not click during map generation. The pages turn about every",
+    "5 s (was 10 s), and the game reaches the map about half as soon. A click still skips."
+  ],
+  "status": "bytes and behaviour checked; not yet confirmed in play",
+  "target": {
+    "file": "COLONIZE.EXE",
+    "sha256": "59a0e173452924603112cf410483021c02ef0cd3512e310d8966b21e0c176291"
+  },
+  "sites": [
+    {
+      "at": "1040:8466",
+      "file_offset": "0x1d466",
+      "expect": "5802",
+      "new": "2c01",
+      "insn": {
+        "at": "1040:8464",
+        "before": "cmp eax,0x258",
+        "after": "cmp eax,0x12c"
+      },
+      "note": "600 ticks -> 300 ticks per page"
+    }
+  ]
+}

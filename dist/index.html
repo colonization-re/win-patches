@@ -1,0 +1,1914 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Colonization patches</title>
+<!-- GENERATED into dist/index.html by build.py: col.css and the patches are inlined, so
+     the page opens from file:// and asks the network for nothing. Edit this template. -->
+<style>/* @colonization-re/web-ui 1.1.0 — Blueprint design system — the shared stylesheet and component set for Colonization RE web tools
+ *
+ * GENERATED. Edit src/css/ and run `npm run build`.
+ */
+/* src/css/tokens/ramps.css */
+:root {
+  --azure-50:#eef4ff;
+  --azure-100:#dbe8ff;
+  --azure-200:#b8d0fb;
+  --azure-300:#7fb0f7;
+  --azure-400:#4785fb;
+  --azure-500:#1f66ef;
+  --azure-600:#0c50b6;
+  --azure-700:#0a3f90;
+  --azure-800:#072c52;
+  --azure-900:#04192f;
+  --azure-950:#000f23;
+  --cyan-200:#b9e8fb;
+  --cyan-300:#7ad4f5;
+  --cyan-400:#35b9ec;
+  --cyan-500:#0e9bd0;
+  --cyan-600:#0b7aa6;
+  --cyan-700:#0a5f80;
+  --cyan-800:#0a6b91;
+  --green-300:#5fd8a4;
+  --green-400:#22b573;
+  --green-500:#158a56;
+  --green-600:#106b43;
+  --amber-300:#ffd166;
+  --amber-400:#f0b429;
+  --amber-500:#8f5e12;
+  --red-200:#ff9a90;
+  --red-300:#ffa79e;
+  --red-400:#ff7a6d;
+  --red-500:#cd1e13;
+  --red-600:#a30f08;
+  --n-0:#ffffff;
+  --n-50:#f5f8fc;
+  --n-100:#e9eff7;
+  --n-200:#d7e1ee;
+  --n-300:#c9d7e7;
+  --n-400:#9db4ce;
+  --n-500:#64809f;
+  --n-600:#3c5878;
+  --n-700:#2f4763;
+  --n-800:#1b2f47;
+  --n-900:#0d1c2e;
+}
+
+/* src/css/tokens/scales.css */
+:root {
+  --r-xs:2px;
+  --r-sm:3px;
+  --r:4px;
+  --r-lg:6px;
+  --bw:1px;
+  --bw-2:2px;
+  --t-fast:.12s;
+  --t:.14s;
+  --ease:cubic-bezier(.32,.72,0,1);
+  --z-sticky:1;
+  --z-bar:50;
+  --w:1100px;
+  --w-wide:1440px;
+  --w-narrow:760px;
+  --font:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Inter,Roboto,
+    "Helvetica Neue",Arial,sans-serif;
+  --font-mono:ui-monospace,SFMono-Regular,"JetBrains Mono",Menlo,Consolas,
+    "Liberation Mono",monospace;
+}
+
+/* src/css/tokens/theme-light.css */
+:root {
+  --bg:#f2f6fc;
+  --grid:rgba(13,28,46,.045);
+  --grid-major:rgba(12,80,182,.10);
+  --surface:var(--n-0);
+  --surface-2:var(--n-50);
+  --surface-3:var(--n-100);
+  --border:var(--n-300);
+  --border-strong:var(--n-400);
+  --rule:var(--n-200);
+  --text:var(--n-900);
+  --text-2:#3c5878;
+  --text-3:#53688a;
+  --brand:var(--azure-600);
+  --brand-hover:var(--azure-700);
+  --brand-soft:color-mix(in srgb,var(--azure-600) 8%,var(--surface));
+  --on-brand:#ffffff;
+  --line:var(--cyan-700);
+  --line-fill:var(--cyan-500);
+  --on-line:#04202b;
+  --ok:var(--green-600);
+  --warn:var(--amber-500);
+  --danger:var(--red-500);
+  --danger-hover:var(--red-600);
+  --on-danger:#ffffff;
+  --ring:color-mix(in srgb,var(--brand) 38%,transparent);
+  --sh:0 10px 28px -14px rgba(13,28,46,.35);
+  color-scheme: light;
+}
+
+/* src/css/tokens/theme-dark.css */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme=light]) {
+    --bg:#061426;
+    --grid:rgba(127,176,247,.07);
+    --grid-major:rgba(53,185,236,.13);
+    --surface:#0a1d33;
+    --surface-2:#0e2841;
+    --surface-3:#143252;
+    --border:#21456d;
+    --border-strong:#35618f;
+    --rule:#17334f;
+    --text:#e6eefa;
+    --text-2:#a6bfdb;
+    --text-3:#85a2c0;
+    --brand:#4d9dff;
+    --brand-hover:#7fb0f7;
+    --brand-soft:color-mix(in srgb,#4d9dff 16%,var(--surface));
+    --on-brand:#04192f;
+    --line:var(--cyan-300);
+    --line-fill:var(--cyan-400);
+    --on-line:#04202b;
+    --ok:var(--green-300);
+    --warn:var(--amber-300);
+    --danger:var(--red-400);
+    --danger-hover:var(--red-200);
+    --on-danger:#3d0703;
+    --ring:color-mix(in srgb,var(--brand) 55%,transparent);
+    --sh:0 16px 40px -20px rgba(0,0,0,.85);
+    color-scheme: dark;
+  }
+}
+:root[data-theme=dark] {
+  --bg:#061426;
+  --grid:rgba(127,176,247,.07);
+  --grid-major:rgba(53,185,236,.13);
+  --surface:#0a1d33;
+  --surface-2:#0e2841;
+  --surface-3:#143252;
+  --border:#21456d;
+  --border-strong:#35618f;
+  --rule:#17334f;
+  --text:#e6eefa;
+  --text-2:#a6bfdb;
+  --text-3:#85a2c0;
+  --brand:#4d9dff;
+  --brand-hover:#7fb0f7;
+  --brand-soft:color-mix(in srgb,#4d9dff 16%,var(--surface));
+  --on-brand:#04192f;
+  --line:var(--cyan-300);
+  --line-fill:var(--cyan-400);
+  --on-line:#04202b;
+  --ok:var(--green-300);
+  --warn:var(--amber-300);
+  --danger:var(--red-400);
+  --danger-hover:var(--red-200);
+  --on-danger:#3d0703;
+  --ring:color-mix(in srgb,var(--brand) 55%,transparent);
+  --sh:0 16px 40px -20px rgba(0,0,0,.85);
+  color-scheme: dark;
+}
+
+/* src/css/base/reset.css */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+html {
+  -webkit-text-size-adjust: 100%;
+}
+body {
+  margin: 0;
+  color: var(--text);
+  font-family: var(--font);
+  font-size: 16px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  background-color: var(--bg);
+}
+body.col-ruled {
+  background-image:
+    linear-gradient(var(--grid-major) 1px, transparent 1px),
+    linear-gradient(
+      90deg,
+      var(--grid-major) 1px,
+      transparent 1px),
+    linear-gradient(var(--grid) 1px, transparent 1px),
+    linear-gradient(
+      90deg,
+      var(--grid) 1px,
+      transparent 1px);
+  background-size:
+    80px 80px,
+    80px 80px,
+    8px 8px,
+    8px 8px;
+  background-position: -1px -1px;
+  background-attachment: fixed;
+}
+::selection {
+  background: color-mix(in srgb, var(--brand) 30%, transparent);
+}
+
+/* src/css/base/layout.css */
+.col-wrap {
+  max-width: var(--w);
+  margin: 0 auto;
+  padding: 40px 24px 96px;
+}
+.col-wrap--wide {
+  max-width: var(--w-wide);
+}
+.col-wrap--narrow {
+  max-width: var(--w-narrow);
+}
+@media (max-width: 640px) {
+  .col-wrap {
+    padding: 24px 16px 64px;
+  }
+}
+
+/* src/css/base/typography.css */
+h1,
+h2,
+h3,
+h4 {
+  margin: 0 0 .45em;
+  font-weight: 660;
+  line-height: 1.15;
+  letter-spacing: -.02em;
+  text-wrap: balance;
+}
+h1 {
+  font-size: clamp(30px, 4.4vw, 42px);
+}
+h2 {
+  font-size: clamp(21px, 2.6vw, 26px);
+  margin-top: 1.9em;
+}
+h3 {
+  font-size: 18px;
+  margin-top: 1.6em;
+}
+h4 {
+  font-size: 15.5px;
+}
+p {
+  margin: 0 0 1em;
+}
+a {
+  color: var(--brand);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+  transition: color var(--t-fast) var(--ease);
+}
+a:hover {
+  color: var(--brand-hover);
+}
+strong,
+b {
+  font-weight: 640;
+}
+.col-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  font-weight: 500;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--line);
+  margin: 0 0 10px;
+}
+.col-lead {
+  font-size: clamp(16.5px, 1.8vw, 18.5px);
+  line-height: 1.6;
+  color: var(--text-2);
+  margin: 0 0 1em;
+  text-wrap: pretty;
+}
+.col-dim {
+  color: var(--text-2);
+}
+.col-faint {
+  color: var(--text-3);
+}
+.col-mono {
+  font-family: var(--font-mono);
+  font-size: .93em;
+}
+.col-tnum {
+  font-variant-numeric: tabular-nums;
+}
+.col-mark {
+  background: color-mix(in srgb, var(--line) 18%, transparent);
+  padding: .06em .28em;
+  border-radius: var(--r-xs);
+  color: var(--text);
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+}
+code {
+  font-family: var(--font-mono);
+  font-size: .87em;
+  background: var(--surface-3);
+  border: 1px solid var(--border);
+  padding: .1em .38em;
+  border-radius: var(--r-xs);
+}
+pre {
+  margin: 0 0 20px;
+  padding: 16px 18px;
+  overflow-x: auto;
+  line-height: 1.55;
+  font-size: 13px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-left: 2px solid var(--line);
+  border-radius: var(--r);
+}
+pre code {
+  background: none;
+  border: 0;
+  padding: 0;
+  font-size: inherit;
+}
+kbd {
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  padding: 2px 6px;
+  background: var(--surface);
+  border: 1px solid var(--border-strong);
+  border-bottom-width: 2px;
+  border-radius: var(--r-xs);
+}
+hr {
+  border: 0;
+  height: 1px;
+  background: var(--border);
+  margin: 32px 0;
+}
+.col-rule-dashed {
+  border: 0;
+  border-top: 1px dashed var(--border-strong);
+  height: 0;
+  margin: 32px 0;
+}
+.col-sectionhead {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin: 48px 0 20px;
+}
+.col-sectionhead h2 {
+  margin: 0;
+  white-space: nowrap;
+}
+.col-sectionhead::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+.col-meta {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-3);
+  font-variant-numeric: tabular-nums;
+}
+
+/* src/css/components/plate.css */
+.col-plate {
+  position: relative;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--r);
+  background: var(--surface);
+  padding: clamp(26px, 4vw, 44px);
+  margin: 0 0 36px;
+  overflow: hidden;
+}
+.col-plate::after {
+  content: "";
+  position: absolute;
+  right: 18px;
+  bottom: 18px;
+  width: 22px;
+  height: 22px;
+  border-right: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  opacity: .8;
+  pointer-events: none;
+}
+.col-plate > * {
+  position: relative;
+  max-width: 64ch;
+}
+.col-plate h1 {
+  margin: 0 0 12px;
+}
+.col-plate .col-eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.col-plate .col-eyebrow::after {
+  content: "";
+  width: 56px;
+  height: 1px;
+  background: var(--line);
+  opacity: .7;
+}
+.col-plate-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0;
+  margin: 26px 0 0;
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  max-width: none;
+  background: var(--surface-2);
+}
+.col-plate-meta > div {
+  flex: 1 1 150px;
+  padding: 10px 14px;
+  border-right: 1px solid var(--border);
+}
+.col-plate-meta > div:last-child {
+  border-right: 0;
+}
+.col-plate-meta dt {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--text-3);
+  margin: 0;
+}
+.col-plate-meta dd {
+  margin: 4px 0 0;
+  font-size: 15px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+/* src/css/components/card.css */
+.col-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 20px 22px;
+  transition: border-color var(--t) var(--ease), background-color var(--t) var(--ease);
+}
+.col-card > :first-child {
+  margin-top: 0;
+}
+.col-card > :last-child {
+  margin-bottom: 0;
+}
+.col-card--hover:hover {
+  border-color: var(--border-strong);
+  background: var(--surface-2);
+}
+.col-card--line {
+  border-top: 2px solid var(--line);
+}
+.col-card--ticks {
+  position: relative;
+}
+.col-card--ticks::before,
+.col-card--ticks::after {
+  content: "";
+  position: absolute;
+  width: 9px;
+  height: 9px;
+  pointer-events: none;
+}
+.col-card--ticks::before {
+  left: -1px;
+  top: -1px;
+  border-left: 2px solid var(--line);
+  border-top: 2px solid var(--line);
+}
+.col-card--ticks::after {
+  right: -1px;
+  bottom: -1px;
+  border-right: 2px solid var(--line);
+  border-bottom: 2px solid var(--line);
+}
+
+/* src/css/components/bar.css */
+.col-bar {
+  position: sticky;
+  top: 0;
+  z-index: var(--z-bar);
+  background: color-mix(in srgb, var(--bg) 88%, transparent);
+  border-bottom: 1px solid var(--border);
+}
+@supports (backdrop-filter:blur(1px)) {
+  .col-bar {
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+  }
+}
+.col-bar-in {
+  max-width: var(--w-wide);
+  margin: 0 auto;
+  padding: 11px 24px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.col-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  font-family: var(--font-mono);
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: .02em;
+  color: var(--text);
+}
+.col-brand-mark {
+  width: 22px;
+  height: 22px;
+  flex: none;
+  border-radius: var(--r-xs);
+  border: 1px solid var(--line);
+  position: relative;
+}
+.col-brand-mark::after {
+  content: "";
+  position: absolute;
+  inset: 4px;
+  border: 1px solid var(--brand);
+}
+
+/* src/css/components/dialog.css */
+dialog.col-dialog {
+  padding: 0;
+  color: var(--text);
+  background: var(--surface);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--r);
+  box-shadow: var(--sh);
+  max-width: min(560px, 92vw);
+  width: 100%;
+}
+dialog.col-dialog::backdrop {
+  background: color-mix(in srgb, #000f23 66%, transparent);
+}
+.col-dialog-head {
+  padding: 20px 22px 0;
+}
+.col-dialog-head h3 {
+  margin: 0;
+}
+.col-dialog-body {
+  padding: 12px 22px 18px;
+  color: var(--text-2);
+}
+.col-dialog-foot {
+  padding: 14px 22px;
+  border-top: 1px solid var(--border);
+  background: var(--surface-2);
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+}
+
+/* src/css/components/button.css */
+.col-btn {
+  --_bg:var(--brand);
+  --_fg:var(--on-brand);
+  --_bd:var(--brand);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: -.005em;
+  padding: 10px 18px;
+  min-height: 38px;
+  color: var(--_fg);
+  background: var(--_bg);
+  border: 1px solid var(--_bd);
+  border-radius: var(--r-sm);
+  cursor: pointer;
+  text-decoration: none;
+  white-space: nowrap;
+  -webkit-appearance: none;
+  appearance: none;
+  transition:
+    background-color var(--t-fast) var(--ease),
+    border-color var(--t-fast) var(--ease),
+    color var(--t-fast) var(--ease);
+}
+.col-btn:hover {
+  background: var(--brand-hover);
+  border-color: var(--brand-hover);
+}
+.col-btn:active {
+  transform: translateY(.5px);
+}
+.col-btn:disabled,
+.col-btn[aria-disabled=true] {
+  background: var(--surface-3);
+  color: var(--text-3);
+  border-color: var(--border);
+  cursor: not-allowed;
+  transform: none;
+}
+.col-btn--outline {
+  --_bg:transparent;
+  --_fg:var(--brand);
+  --_bd:var(--brand);
+}
+.col-btn--outline:hover {
+  background: var(--brand-soft);
+  border-color: var(--brand);
+  color: var(--brand-hover);
+}
+.col-btn--line {
+  --_bg:var(--line-fill);
+  --_fg:var(--on-line);
+  --_bd:var(--line-fill);
+}
+.col-btn--line:hover {
+  filter: brightness(1.08);
+  background: var(--line-fill);
+  border-color: var(--line-fill);
+}
+.col-btn--ghost {
+  --_bg:transparent;
+  --_fg:var(--text);
+  --_bd:var(--border-strong);
+}
+.col-btn--ghost:hover {
+  background: var(--surface-2);
+  border-color: var(--text-3);
+  color: var(--text);
+}
+.col-btn--quiet {
+  --_bg:transparent;
+  --_fg:var(--text-2);
+  --_bd:transparent;
+}
+.col-btn--quiet:hover {
+  background: var(--surface-2);
+  border-color: var(--border);
+  color: var(--text);
+}
+.col-btn--danger {
+  --_bg:var(--danger);
+  --_fg:var(--on-danger);
+  --_bd:var(--danger);
+}
+.col-btn--danger:hover {
+  background: var(--danger-hover);
+  border-color: var(--danger-hover);
+  color: var(--on-danger);
+}
+.col-btn--sm {
+  font-size: 12.5px;
+  padding: 6px 12px;
+  min-height: 30px;
+  gap: 6px;
+}
+.col-btn--lg {
+  font-size: 15px;
+  padding: 13px 24px;
+  min-height: 46px;
+}
+.col-btn--block {
+  display: flex;
+  width: 100%;
+}
+.col-btn--icon {
+  padding: 0;
+  width: 38px;
+  min-height: 38px;
+}
+.col-btn--sm.col-btn--icon {
+  width: 30px;
+}
+.col-btnrow {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.col-btn--file {
+  position: relative;
+  overflow: hidden;
+}
+.col-btn--file input {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  font-size: 0;
+  cursor: pointer;
+}
+.col-btn--file:has(input:focus-visible) {
+  outline: 2px solid var(--brand);
+  outline-offset: 2px;
+}
+
+/* src/css/components/form.css */
+.col-field {
+  display: block;
+  margin: 0 0 18px;
+}
+.col-label {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--text-3);
+  margin: 0 0 7px;
+}
+.col-label--inline {
+  display: inline-block;
+  margin: 0;
+  white-space: nowrap;
+}
+.col-hint {
+  font-size: 13px;
+  color: var(--text-3);
+  margin: 7px 0 0;
+}
+.col-hint--error {
+  color: var(--danger);
+}
+.col-input,
+.col-select,
+.col-textarea {
+  --_w:100%;
+  font: inherit;
+  font-size: 14.5px;
+  color: var(--text);
+  width: var(--_w);
+  background: var(--surface);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--r-sm);
+  padding: 10px 12px;
+  -webkit-appearance: none;
+  appearance: none;
+  transition: border-color var(--t-fast) var(--ease), box-shadow var(--t-fast) var(--ease);
+}
+.col-textarea {
+  min-height: 104px;
+  resize: vertical;
+  line-height: 1.55;
+}
+.col-select {
+  padding-right: 34px;
+  background-image:
+    linear-gradient(
+      45deg,
+      transparent 50%,
+      currentColor 50%),
+    linear-gradient(
+      135deg,
+      currentColor 50%,
+      transparent 50%);
+  background-position: calc(100% - 17px) 55%, calc(100% - 12px) 55%;
+  background-size: 5px 5px, 5px 5px;
+  background-repeat: no-repeat;
+}
+.col-input::placeholder,
+.col-textarea::placeholder {
+  color: var(--text-3);
+}
+.col-input:hover,
+.col-select:hover,
+.col-textarea:hover {
+  border-color: var(--text-3);
+}
+.col-input:focus,
+.col-select:focus,
+.col-textarea:focus {
+  outline: none;
+  border-color: var(--brand);
+  box-shadow: 0 0 0 3px var(--ring);
+}
+.col-input:disabled,
+.col-select:disabled,
+.col-textarea:disabled {
+  background: var(--surface-3);
+  color: var(--text-3);
+  cursor: not-allowed;
+}
+.col-input--mono {
+  font-family: var(--font-mono);
+  font-size: 13.5px;
+}
+.col-input--sm,
+.col-select--sm,
+.col-textarea--sm {
+  padding: 5px 8px;
+  font-size: 13px;
+}
+.col-input--xs,
+.col-select--xs,
+.col-textarea--xs {
+  --_w:78px;
+  padding: 5px 8px;
+  font-size: 13px;
+}
+.col-input--auto,
+.col-select--auto,
+.col-textarea--auto {
+  --_w:auto;
+}
+.col-select.col-input--sm,
+.col-select.col-input--xs,
+.col-select--sm,
+.col-select--xs {
+  padding-right: 26px;
+  background-position: calc(100% - 15px) 55%, calc(100% - 10px) 55%;
+}
+.col-inputgroup {
+  position: relative;
+  display: block;
+}
+.col-inputgroup .col-input {
+  padding-left: 34px;
+}
+.col-inputgroup > .col-inputgroup-icon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-3);
+  font-size: 13px;
+  font-family: var(--font-mono);
+  pointer-events: none;
+}
+fieldset.col-fieldset {
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 16px 18px;
+  margin: 0 0 20px;
+  background: var(--surface-2);
+}
+fieldset.col-fieldset > legend {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--text-3);
+  padding: 0 7px;
+}
+.col-check {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin: 0 0 11px;
+  cursor: pointer;
+  font-size: 14.5px;
+  line-height: 1.45;
+}
+.col-check input[type=checkbox],
+.col-check input[type=radio] {
+  -webkit-appearance: none;
+  appearance: none;
+  margin: 0;
+  flex: none;
+  position: relative;
+  width: 17px;
+  height: 17px;
+  transform: translateY(2px);
+  cursor: pointer;
+  background: var(--surface);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--r-xs);
+  transition: background var(--t-fast) var(--ease), border-color var(--t-fast) var(--ease);
+}
+.col-check input[type=radio] {
+  border-radius: 50%;
+}
+.col-check input:hover {
+  border-color: var(--brand);
+}
+.col-check input:checked {
+  background: var(--brand);
+  border-color: var(--brand);
+}
+.col-check input[type=checkbox]:checked::after {
+  content: "";
+  position: absolute;
+  left: 5.5px;
+  top: 2px;
+  width: 4px;
+  height: 9px;
+  border: solid var(--on-brand);
+  border-width: 0 2px 2px 0;
+  transform: rotate(43deg);
+}
+.col-check input[type=radio]:checked::after {
+  content: "";
+  position: absolute;
+  inset: 4px;
+  border-radius: 50%;
+  background: var(--on-brand);
+}
+.col-check input:disabled {
+  background: var(--surface-3);
+  border-color: var(--border);
+  cursor: not-allowed;
+}
+.col-check input:disabled + span {
+  color: var(--text-3);
+}
+.col-check:has(input:disabled) {
+  cursor: not-allowed;
+}
+.col-switch {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  cursor: pointer;
+  margin: 0 0 11px;
+  font-size: 14.5px;
+}
+.col-switch input {
+  -webkit-appearance: none;
+  appearance: none;
+  margin: 0;
+  flex: none;
+  position: relative;
+  width: 40px;
+  height: 22px;
+  border-radius: var(--r-sm);
+  background: var(--surface-3);
+  border: 1px solid var(--border-strong);
+  cursor: pointer;
+  transition: background var(--t) var(--ease), border-color var(--t) var(--ease);
+}
+.col-switch input::after {
+  content: "";
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 16px;
+  height: 16px;
+  border-radius: 1px;
+  background: var(--text-3);
+  transition: transform var(--t) var(--ease), background var(--t) var(--ease);
+}
+.col-switch input:checked {
+  background: var(--brand-soft);
+  border-color: var(--brand);
+}
+.col-switch input:checked::after {
+  transform: translateX(18px);
+  background: var(--brand);
+}
+.col-switch input:disabled {
+  opacity: .5;
+  cursor: not-allowed;
+}
+.col-segmented {
+  display: inline-flex;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--r-sm);
+  overflow: hidden;
+  background: var(--surface);
+}
+.col-segmented button {
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 7px 15px;
+  border: 0;
+  border-right: 1px solid var(--border);
+  background: transparent;
+  color: var(--text-2);
+  cursor: pointer;
+  transition: background var(--t-fast) var(--ease), color var(--t-fast) var(--ease);
+}
+.col-segmented button:last-child {
+  border-right: 0;
+}
+.col-segmented button:hover {
+  background: var(--surface-2);
+  color: var(--text);
+}
+.col-segmented button[aria-selected=true],
+.col-segmented button.is-active {
+  background: var(--brand);
+  color: var(--on-brand);
+}
+.col-cells {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.col-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.col-cell > span {
+  font-size: 10.5px;
+  color: var(--text-3);
+}
+
+/* src/css/components/tabs.css */
+.col-tabs {
+  display: flex;
+  gap: 0;
+  border-bottom: 1px solid var(--border);
+  margin: 0 0 26px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.col-tabs::-webkit-scrollbar {
+  display: none;
+}
+.col-tab {
+  font: inherit;
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  background: none;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  padding: 11px 16px;
+  margin-bottom: -1px;
+  color: var(--text-3);
+  cursor: pointer;
+  transition: color var(--t-fast) var(--ease), border-color var(--t-fast) var(--ease);
+}
+.col-tab:hover {
+  color: var(--text);
+  border-bottom-color: var(--border-strong);
+}
+.col-tab[aria-selected=true],
+.col-tab.is-active {
+  color: var(--text);
+  border-bottom-color: var(--line);
+}
+
+/* src/css/components/list.css */
+.col-list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.col-list-item {
+  display: flex;
+  align-items: baseline;
+  gap: 9px;
+  width: 100%;
+  font: inherit;
+  font-size: 13px;
+  text-align: left;
+  padding: 6px 9px;
+  border: 0;
+  border-radius: var(--r-sm);
+  background: none;
+  color: var(--text);
+  cursor: pointer;
+  transition: background var(--t-fast) var(--ease);
+}
+.col-list-item:hover {
+  background: var(--surface-3);
+}
+.col-list-item[aria-selected=true],
+.col-list-item.is-active {
+  background: var(--brand);
+  color: var(--on-brand);
+}
+.col-list-i {
+  flex: none;
+  min-width: 26px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-3);
+  font-variant-numeric: tabular-nums;
+}
+.col-list-item[aria-selected=true] .col-list-i,
+.col-list-item.is-active .col-list-i {
+  color: var(--on-brand);
+  opacity: .75;
+}
+.col-list-item--sub {
+  padding-left: 26px;
+}
+
+/* src/css/components/disclosure.css */
+.col-disclosure {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+}
+.col-disclosure > summary {
+  padding: 11px 14px;
+  cursor: pointer;
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  letter-spacing: .04em;
+  color: var(--text-2);
+  transition: color var(--t-fast) var(--ease);
+}
+.col-disclosure > summary:hover {
+  color: var(--text);
+}
+.col-disclosure > *:not(summary) {
+  padding-left: 14px;
+  padding-right: 14px;
+}
+.col-disclosure > *:last-child:not(summary) {
+  padding-bottom: 14px;
+}
+
+/* src/css/components/props.css */
+.col-props {
+  --_k:230px;
+  display: flex;
+  flex-direction: column;
+}
+.col-prop {
+  display: grid;
+  grid-template-columns: var(--_k,230px) 1fr;
+  gap: 9px 16px;
+  align-items: start;
+  padding: 9px 0;
+  border-top: 1px solid var(--rule);
+}
+.col-prop:first-child {
+  border-top: 0;
+}
+.col-prop-label {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 6px;
+}
+.col-prop-name {
+  font-family: var(--font-mono);
+  font-size: 13px;
+}
+.col-prop-desc {
+  grid-column: 2;
+  max-width: 80ch;
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: var(--text-3);
+}
+.col-prop--muted {
+  opacity: .72;
+  transition: opacity var(--t-fast) var(--ease);
+}
+.col-prop--muted:hover {
+  opacity: 1;
+}
+@media (max-width: 700px) {
+  .col-prop {
+    grid-template-columns: 1fr;
+  }
+  .col-prop-desc {
+    grid-column: 1;
+  }
+}
+
+/* src/css/components/range.css */
+.col-range {
+  --_w:130px;
+  -webkit-appearance: none;
+  appearance: none;
+  width: var(--_w);
+  height: 18px;
+  background: none;
+  border: 0;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+}
+.col-range::-webkit-slider-runnable-track {
+  height: 4px;
+  background: var(--surface-3);
+  border: 1px solid var(--border);
+  border-radius: var(--r-xs);
+}
+.col-range::-moz-range-track {
+  height: 4px;
+  background: var(--surface-3);
+  border: 1px solid var(--border);
+  border-radius: var(--r-xs);
+}
+.col-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 12px;
+  height: 14px;
+  margin-top: -6px;
+  background: var(--brand);
+  border: 0;
+  border-radius: var(--r-xs);
+}
+.col-range::-moz-range-thumb {
+  width: 12px;
+  height: 14px;
+  background: var(--brand);
+  border: 0;
+  border-radius: var(--r-xs);
+}
+.col-range:disabled {
+  cursor: not-allowed;
+}
+.col-range:disabled::-webkit-slider-thumb {
+  background: var(--text-3);
+}
+.col-range:disabled::-moz-range-thumb {
+  background: var(--text-3);
+}
+
+/* src/css/components/table.css */
+.col-tablewrap {
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  overflow: hidden;
+  background: var(--surface);
+  margin: 0 0 24px;
+}
+.col-tablewrap .col-scroll {
+  overflow-x: auto;
+}
+.col-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+.col-table th {
+  position: sticky;
+  top: 0;
+  z-index: var(--z-sticky);
+  background: var(--surface-2);
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  font-weight: 500;
+  letter-spacing: .11em;
+  text-transform: uppercase;
+  color: var(--text-3);
+  text-align: right;
+  white-space: nowrap;
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--border-strong);
+}
+.col-table th:first-child,
+.col-table td:first-child {
+  text-align: left;
+}
+.col-table td {
+  padding: 11px 14px;
+  text-align: right;
+  color: var(--text-2);
+  border-bottom: 1px solid var(--rule);
+  font-variant-numeric: tabular-nums;
+}
+.col-table td:first-child {
+  color: var(--text);
+  font-weight: 550;
+}
+.col-table tbody tr:last-child td {
+  border-bottom: 0;
+}
+.col-table tbody tr:hover {
+  background: var(--surface-2);
+}
+.col-table--ruled td {
+  border-right: 1px solid var(--rule);
+}
+.col-table--ruled td:last-child,
+.col-table--ruled th:last-child {
+  border-right: 0;
+}
+.col-table--ruled th {
+  border-right: 1px solid var(--rule);
+}
+.col-table--compact td {
+  padding: 6px 14px;
+}
+
+/* src/css/components/badge.css */
+.col-badge {
+  --_c:var(--text-3);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  font-weight: 500;
+  letter-spacing: .09em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  padding: 3px 8px;
+  border-radius: var(--r-xs);
+  color: var(--_c);
+  background: color-mix(in srgb, var(--_c) 12%, transparent);
+  border: 1px solid color-mix(in srgb, var(--_c) 40%, transparent);
+}
+.col-badge--brand {
+  --_c:var(--brand);
+}
+.col-badge--line {
+  --_c:var(--line);
+}
+.col-badge--ok {
+  --_c:var(--ok);
+}
+.col-badge--warn {
+  --_c:var(--warn);
+}
+.col-badge--danger {
+  --_c:var(--danger);
+}
+.col-badge--solid {
+  background: var(--brand);
+  color: var(--on-brand);
+  border-color: var(--brand);
+}
+.col-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 12.5px;
+  font-family: var(--font-mono);
+  padding: 4px 10px;
+  border-radius: var(--r-xs);
+  background: var(--surface-3);
+  border: 1px solid var(--border);
+  color: var(--text-2);
+}
+
+/* src/css/components/meter.css */
+.col-meter {
+  height: 10px;
+  background: var(--surface-3);
+  border: 1px solid var(--border);
+  border-radius: var(--r-xs);
+  overflow: hidden;
+  position: relative;
+}
+.col-meter > i {
+  display: block;
+  height: 100%;
+  background: var(--brand);
+}
+.col-meter--line > i {
+  background: var(--line-fill);
+}
+.col-meter--tall {
+  height: 16px;
+}
+.col-meter--ticked {
+  background-image:
+    repeating-linear-gradient(
+      90deg,
+      transparent 0 calc(10% - 1px),
+      var(--border) calc(10% - 1px),
+      var(--border) 10%);
+}
+.col-stack-bar {
+  display: flex;
+  height: 40px;
+  gap: 1px;
+  margin: 16px 0;
+  border: 1px solid var(--border);
+  border-radius: var(--r-xs);
+  overflow: hidden;
+  background: var(--border);
+}
+.col-stack-bar > i {
+  display: block;
+  min-width: 3px;
+}
+.col-stack-bar > i.is-empty {
+  background-image:
+    repeating-linear-gradient(
+      45deg,
+      transparent 0 5px,
+      var(--border) 5px 6px);
+  background-color: var(--surface-2);
+}
+.col-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 22px;
+  font-size: 13px;
+  color: var(--text-2);
+  margin: 14px 0 0;
+}
+.col-legend > span {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.col-legend i {
+  width: 10px;
+  height: 10px;
+  flex: none;
+  border-radius: 1px;
+}
+.col-legend b {
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+/* src/css/components/tile.css */
+.col-tiles {
+  display: grid;
+  gap: 0;
+  margin: 0 0 24px;
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  overflow: hidden;
+  background: var(--surface);
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+}
+.col-tile {
+  padding: 18px 20px;
+  border-right: 1px solid var(--border);
+}
+.col-tile:last-child {
+  border-right: 0;
+}
+.col-tile-k {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  letter-spacing: .11em;
+  text-transform: uppercase;
+  color: var(--text-3);
+}
+.col-tile-v {
+  font-size: 30px;
+  font-weight: 660;
+  letter-spacing: -.03em;
+  line-height: 1.1;
+  margin-top: 8px;
+  font-variant-numeric: tabular-nums;
+}
+.col-tile-v em {
+  font-style: normal;
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--text-3);
+  letter-spacing: 0;
+  font-family: var(--font-mono);
+}
+.col-tile-d {
+  font-size: 13px;
+  color: var(--text-2);
+  margin-top: 7px;
+}
+.col-tile--accent .col-tile-v {
+  color: var(--line);
+}
+@media (max-width: 700px) {
+  .col-tile {
+    border-right: 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .col-tile:last-child {
+    border-bottom: 0;
+  }
+}
+.col-tile-v--text {
+  font-size: 16px;
+  letter-spacing: -.01em;
+  word-break: break-all;
+}
+
+/* src/css/components/note.css */
+.col-note {
+  --_c:var(--brand);
+  display: flex;
+  gap: 11px;
+  padding: 12px 16px;
+  margin: 0 0 20px;
+  font-size: 14px;
+  color: var(--text-2);
+  background: color-mix(in srgb, var(--_c) 7%, var(--surface));
+  border: 1px solid color-mix(in srgb, var(--_c) 32%, transparent);
+  border-left: 2px solid var(--_c);
+  border-radius: var(--r-sm);
+}
+.col-note strong {
+  color: var(--text);
+}
+.col-note--ok {
+  --_c:var(--ok);
+}
+.col-note--warn {
+  --_c:var(--warn);
+}
+.col-note--danger {
+  --_c:var(--danger);
+}
+.col-note--line {
+  --_c:var(--line);
+}
+dl.col-dl {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 9px 20px;
+  margin: 0 0 20px;
+  font-size: 14px;
+}
+dl.col-dl dt {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--text);
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+dl.col-dl dd {
+  margin: 0;
+  color: var(--text-2);
+}
+
+/* src/css/utilities.css */
+.col-row {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.col-row > .col-field,
+.col-row > .col-check,
+.col-row > .col-switch {
+  margin-bottom: 0;
+}
+.col-spread {
+  display: flex;
+  gap: 18px;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.col-grid {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+}
+.col-grid--2 {
+  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+}
+.col-stack > * + * {
+  margin-top: 14px;
+}
+.col-push {
+  margin-left: auto;
+}
+.col-art {
+  image-rendering: pixelated;
+  display: block;
+  border: 1px solid var(--border);
+}
+.col-foot {
+  margin-top: 64px;
+  padding-top: 20px;
+  border-top: 1px solid var(--border);
+  font-size: 13px;
+  color: var(--text-3);
+  font-family: var(--font-mono);
+}
+.col-ok {
+  color: var(--ok);
+}
+.col-warn {
+  color: var(--warn);
+}
+.col-danger {
+  color: var(--danger);
+}
+
+/* src/css/a11y.css */
+:focus-visible {
+  outline: 2px solid var(--brand);
+  outline-offset: 2px;
+  border-radius: var(--r-xs);
+}
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-strong) transparent;
+}
+::-webkit-scrollbar {
+  width: 11px;
+  height: 11px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border-strong);
+  border-radius: 0;
+  border: 3px solid transparent;
+  background-clip: content-box;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-3);
+  background-clip: content-box;
+}
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition-duration: .01ms !important;
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
+@media print {
+  body {
+    background: #fff;
+    color: #000;
+    background-image: none;
+  }
+  .col-bar {
+    position: static;
+  }
+  .col-plate::after {
+    display: none;
+  }
+}
+
+/* src/css/index.css */
+</style>
+<style>
+/* page-local, namespaced wp- ; everything else is col.css */
+.wp-drop.is-over { outline: var(--bw-2) dashed var(--line); outline-offset: 4px; }
+.wp-patch { display: grid; gap: 6px; padding: 14px 0; border-top: var(--bw) solid var(--rule); }
+.wp-patch:first-of-type { border-top: 0; padding-top: 4px; }
+.wp-patch .col-check { margin: 0; }
+.wp-patch p { margin: 0; }
+.wp-head { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.wp-why { white-space: pre-line; }
+.wp-hash { overflow-wrap: anywhere; }
+</style>
+</head>
+<body class="col-ruled">
+<div class="col-bar">
+  <div class="col-bar-in">
+    <a class="col-brand" href="https://github.com/colonization-re/win-patches"><span class="col-brand-mark"></span> win-patches</a>
+    <span class="col-badge col-badge--line">Colonization for Windows</span>
+    <div class="col-push col-segmented" id="theme">
+      <button data-t="light">Light</button>
+      <button data-t="dark">Dark</button>
+      <button data-t="auto" class="is-active">Auto</button>
+    </div>
+  </div>
+</div>
+
+<main class="col-wrap col-stack">
+  <div class="col-plate">
+    <p class="col-eyebrow">Sid Meier's Colonization · Windows · 1995</p>
+    <h1>Patch your own COLONIZE.EXE</h1>
+    <p class="col-lead">Tick the fixes you want and download the result. This page changes a
+      few bytes in your copy of the game, in your browser: the file is never uploaded.</p>
+    <dl class="col-plate-meta">
+      <div><dt>Patches</dt><dd id="count">–</dd></div>
+      <div><dt>For</dt><dd>the updated 1995 release</dd></div>
+      <div><dt>SHA-256</dt><dd class="col-mono" id="target">–</dd></div>
+    </dl>
+  </div>
+
+  <section class="col-card wp-drop" id="drop">
+    <p class="col-eyebrow">1 · Your game file</p>
+    <div class="col-row">
+      <label class="col-btn col-btn--outline col-btn--file">
+        Choose COLONIZE.EXE<input type="file" id="file" accept=".exe,.EXE"></label>
+      <span class="col-meta">or drop it on this box. It is in the folder you installed
+        the game to.</span>
+    </div>
+    <p class="col-note col-note--line" id="verdict" style="margin-bottom:0"><span>No file
+      yet. Nothing is read until you choose one.</span></p>
+  </section>
+
+  <section class="col-card">
+    <p class="col-eyebrow">2 · Patches</p>
+    <div id="patches"></div>
+  </section>
+
+  <section class="col-card">
+    <p class="col-eyebrow">3 · Download</p>
+    <div class="col-row">
+      <button class="col-btn" id="download" disabled>Download patched COLONIZE.EXE</button>
+      <span class="col-meta" id="plan">Choose your file first.</span>
+    </div>
+    <p class="col-dim" style="margin:12px 0 0">Put the downloaded file in the game folder in
+      place of <code>COLONIZE.EXE</code>, and keep your original somewhere safe. To undo a patch,
+      load the patched file here again and untick it.</p>
+    <p class="col-meta wp-hash" id="result"></p>
+  </section>
+
+  <p class="col-foot col-dim">No browser? <code>python3 patch.py apply --all --exe
+    COLONIZE.EXE --in-place</code> does the same from a terminal, and every patch is also an
+    <code>.ips</code> file. See the
+    <a href="https://github.com/colonization-re/win-patches">README</a>.</p>
+</main>
+
+<script>
+"use strict";
+const PATCHES = [{"name":"cheat-picture-viewer","kind":"feature","title":"Cheat menu: \"Show Colony Sites\" (an empty stub) becomes the hidden Picture Viewer","why":["The developers' picture viewer, debug_picture_viewer (1040:46aa), asks \"View which","picture #?\" and shows any of 107 CVPC pictures or SPRT sprites in a 640x480 window. Its","command (811) is dispatched but no menu item carries it. Meanwhile the Cheat menu's","\"Show Colony Sites\" (809) calls show_colony_sites (1048:b92c), whose body is empty.","","In the command dispatcher the 809 arm (`push cs / call near show_colony_sites /","jmp near exit`) sits 14 bytes before the 811 arm (`call far debug_picture_viewer /","jmp near exit`). A 2-byte `jmp short` at the head of the 809 arm lands on the 811 arm,","so no relocation is added. The menu label is a DGROUP string used only by","cheat_menu_toggle; it is rewritten in place, NUL-padded to its original 18 bytes."],"test":["In a game, type Ctrl+W, Ctrl+I, Ctrl+N to raise the Cheat menu.","Cheat > Picture Viewer. Enter a number 0..106 (e.g. 5). A 640x480 window titled","\"Close Window to Reset Palette\" shows the picture; close it and the map's colours return.","A number outside 0..106 closes at once. The other Cheat items are unchanged."],"status":"bytes and behaviour checked; not yet confirmed in play","target":{"file":"COLONIZE.EXE","sha256":"59a0e173452924603112cf410483021c02ef0cd3512e310d8966b21e0c176291"},"sites":[{"file_offset":"0xea33f","expect":"0ee8","new":"eb0c"},{"file_offset":"0x62738","expect":"53686f7720436f6c6f6e7920536974657300","new":"506963747572652056696577657200000000"}]},{"name":"intro-pages-5s","kind":"qol","title":"New game: the introduction pages advance every 5 seconds instead of every 10","why":["While a new map is generated, check_timer_tick (1040:843c) shows the ten pages of","opening_scene (credits, then who you are, which nation, which monarch) one every 600","ticks of MSGetTicks, which counts 60ths of a second: 10 s a page. new_game_setup then","spins on check_timer_tick(1) until the last page has shown, so a player who does not","click waits up to ~100 s. A click or key already dismisses the rest once the map is","done; this only shortens the wait for a player who reads rather than clicks.","","The threshold is the imm32 of `cmp eax,600`; 300 = 5 s keeps a one-line page readable."],"test":["Start a new game and do not click during map generation. The pages turn about every","5 s (was 10 s), and the game reaches the map about half as soon. A click still skips."],"status":"bytes and behaviour checked; not yet confirmed in play","target":{"file":"COLONIZE.EXE","sha256":"59a0e173452924603112cf410483021c02ef0cd3512e310d8966b21e0c176291"},"sites":[{"file_offset":"0x1d466","expect":"5802","new":"2c01"}]},{"name":"pedia-colonist-icons","kind":"fix","title":"Colonopedia: the Free Colonist page draws its three extra icons side by side","why":["PediaWin_DoUnitArticle (1060:3a6d) draws the Free Colonist page's icon row: one colonist,","then three more (specs 0x19..0x1b) in a loop, then the 21 experts. The three-icon loop","counts them into `col` but never advances `x` (register DI), so all three land on the","second square -- and so does the first expert, which is drawn before its loop steps x.","Four figures share one square and only the last is visible. `col` proves the intent: it","leaves that loop at 4, and the expert loop wraps at 17 as if four positions were used.","","Same-length fix: inside the loop, `inc word [bp-0xc]` (col++) becomes `add di,0x20`","(x += 32, the step every other icon on the page uses), and col starts at 4 instead of 1.","col is not read inside the loop, so it leaves the loop at 4 exactly as before."],"test":["Start or load any game, open the Colonopedia, Units, Free Colonist.","Before: the second square holds four overlapped figures (the last drawn on top), so the","first row shows 14 distinct squares. After: the colonist, the three variants and the","experts each get their own square; the first row is 17 icons wide (x = 20..532) and","wraps, as the expert loop was written to do. Check the 17th icon is inside the page."],"status":"bytes and behaviour checked; not yet confirmed in play","target":{"file":"COLONIZE.EXE","sha256":"59a0e173452924603112cf410483021c02ef0cd3512e310d8966b21e0c176291"},"sites":[{"file_offset":"0x3304c","expect":"01","new":"04"},{"file_offset":"0x33096","expect":"ff46f4","new":"83c720"}]},{"name":"water-cycling","kind":"feature","title":"Water Color Cycling: river currents and beach surf move, as in the DOS version","why":["The DOS build rotates 8 palette entries (CYCLE.DAT: 0x78..0x7F) from the timer interrupt, and","only a few pixels use them: a line down each river (PHYS0.SS frames 1..31), the surf inside the","beach pieces (150..153) and sparkles on the sea lane -- rivers flow, surf moves, the open sea","stays still.","","The Windows water sheet, picture 0xcc, was drawn the same way. init_water_sprites installs it","at palette 40 with 102 colours instead of 96; its extra raw 96..101 -- game entries 136..141 --","sit only on the river centres of its sprites 0..31, the surf of 150..153 and the fish, and it","cuts exactly those cells over sheet 201's plain rivers and beach (its table at SEG20:0x4526 is","g_art_base[28]). The Game Options item \"Water Color Cycling\" and its saved bit","(GAMEFLAG_NO_WATER_CYCLING, 0x100 of SEG20:0x7784) survived too. Nothing ever read the bit or","rotated the entries.","","This patch rotates entries 136..141 up by one, as DOS does, on every cursor blink of","GameBrains_DoHuman's idle phase (25 ticks, 0.42 s), through the game's own dead palette_rotate;","bumps the palette's seed so GRPort_ColorSync re-sends the WinG colour table; and re-blits the","map view. Off in Game Options, off here.","","No byte changes length. The code is written over the dead palette_cross_fade (1068:0d94);","the three relocation records whose sites fell inside those bytes are moved onto the new","code's three far operands; the two records behind DoHuman's calls to","MiniWin_HighlightActiveUnit are pointed at the hook, which runs the tick and then jumps","to MiniWin_HighlightActiveUnit with the caller's stack untouched."],"known_limits":["Water moves only while the game waits for input on the map (the cursor blink, 0.42 s a step --","DOS steps every ~0.29 s from the timer), not during unit moves or AI turns. On a real","256-colour palette device the colours reach the screen through the WinG colour table by WinG's","translated blit; that mode is untested."],"test":["Start or load a game and leave the map idle: the centre line of every river and the surf","along coasts glint and move, about twice a second; open sea, lakes, marsh and the fog-of-war","edge do not move. Game Options > Water Color Cycling off: it stops. Open and close a colony:","nothing else changes."],"status":"seen in play 2026-09-26 (Wine 11 + otvdm on macOS): river currents and beach surf move, the rest of the water does not","target":{"file":"COLONIZE.EXE","sha256":"59a0e173452924603112cf410483021c02ef0cd3512e310d8966b21e0c176291"},"sites":[{"file_offset":"0x102b94","expect":"8cd09045558bec1e8ed883ec0c56578b7e0a0bff7c0ac45e062639bf0e047d20660fbfc766501e68772b68000068c02a0ee8228783c40c5f5e8d66fe1f5d4dcbc45e0626ffb718049affff000083c4028956f88946f6c45e0626ffb71a049affff000083c4028956f48946f233f6e944018bc6990346f683d200b9","new":"1e8cd08ed8b8ffff8ec026f6068577017538506a016a066888005068ac010ee8fff883c40a0726ff06b205750526ff06b205ff36524cff36504cff36464cff36444c9affff000083c4081feaffff0000cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"},{"file_offset":"0x110b9e","expect":"0300dd0d0f0073d0","new":"0300e00d0d00db0f"},{"file_offset":"0x110ba6","expect":"0204bf0d2200c02a","new":"02009a0d14000000"},{"file_offset":"0x110b96","expect":"0300f30d0f0073d0","new":"0300d70d0900f107"},{"file_offset":"0x77886","expect":"0300dc330d00db0f","new":"0300dc330e00940d"},{"file_offset":"0x77bae","expect":"030018340d00db0f","new":"030018340e00940d"}]}];
+const TARGET = PATCHES[0].target.sha256;
+const KIND = { fix: "col-badge--ok", feature: "col-badge--brand", qol: "col-badge--line" };
+const $ = (id) => document.getElementById(id);
+let input = null, inputName = "COLONIZE.EXE", states = {};
+
+const unhex = (h) => Uint8Array.from(h.match(/../g), (x) => parseInt(x, 16));
+const same = (a, b) => a.length === b.length && a.every((v, i) => v === b[i]);
+for (const p of PATCHES) for (const s of p.sites) {
+  s.at_ = parseInt(s.file_offset, 16); s.expect_ = unhex(s.expect); s.new_ = unhex(s.new);
+}
+
+async function sha256(bytes) {
+  if (!(window.crypto && crypto.subtle)) return null;       // not a secure context
+  const d = new Uint8Array(await crypto.subtle.digest("SHA-256", bytes));
+  return Array.from(d, (b) => b.toString(16).padStart(2, "0")).join("");
+}
+
+// A site holds either the bytes the original has there or the bytes the patch puts
+// there. Anything else is a different build, and that patch is not offered.
+function state(bytes, p) {
+  const seen = p.sites.map((s) => {
+    const have = bytes.subarray(s.at_, s.at_ + s.expect_.length);
+    return same(have, s.expect_) ? "original" : same(have, s.new_) ? "applied" : "mismatch";
+  });
+  if (seen.includes("mismatch")) return "mismatch";
+  if (seen.every((x) => x === "original")) return "original";
+  if (seen.every((x) => x === "applied")) return "applied";
+  return "partial";
+}
+
+function renderList() {
+  const box = $("patches");
+  box.textContent = "";
+  for (const p of PATCHES) {
+    const st = states[p.name];
+    const row = document.createElement("div");
+    row.className = "wp-patch";
+    const head = document.createElement("div");
+    head.className = "wp-head";
+    const label = document.createElement("label");
+    label.className = "col-check";
+    const cb = document.createElement("input");
+    cb.type = "checkbox"; cb.dataset.name = p.name;
+    // every patch that fits is ticked: already in the file (untick to remove) or not
+    // yet (untick to leave out). One that does not fit is off and cannot be ticked.
+    cb.disabled = !!st && (st === "mismatch" || st === "partial");
+    cb.checked = !cb.disabled;
+    cb.addEventListener("change", plan);
+    const title = document.createElement("span");
+    const strong = document.createElement("strong");
+    strong.textContent = p.title;
+    title.append(strong);
+    label.append(cb, title);
+    const kind = document.createElement("span");
+    kind.className = "col-badge " + (KIND[p.kind] || "");
+    kind.textContent = p.kind;
+    head.append(label, kind);
+    if (st) {
+      const b = document.createElement("span");
+      b.className = "col-badge " + ({ original: "", applied: "col-badge--ok" }[st] ?? "col-badge--danger");
+      b.textContent = { original: "not in your file", applied: "already in your file",
+                        mismatch: "does not fit this file", partial: "half applied" }[st];
+      head.append(b);
+    }
+    const see = document.createElement("p");
+    see.className = "col-dim";
+    see.textContent = p.test.join(" ");
+    const more = document.createElement("details");
+    more.className = "col-disclosure";
+    const sum = document.createElement("summary");
+    sum.textContent = "How it works";
+    const why = document.createElement("p");
+    why.className = "wp-why col-dim";
+    // manifest lines are wrapped prose; an empty line separates paragraphs
+    why.textContent = p.why.join("\n").split(/\n\s*\n/)
+      .map((para) => para.replace(/\n/g, " ")).join("\n\n");
+    more.append(sum, why);
+    if (p.known_limits) {
+      const lim = document.createElement("p");
+      lim.className = "col-dim";
+      lim.textContent = "Limits: " + p.known_limits.join(" ");
+      more.append(lim);
+    }
+    row.append(head, see, more);
+    box.append(row);
+  }
+}
+
+function wanted() {
+  return Object.fromEntries(Array.from(document.querySelectorAll("#patches input"),
+    (cb) => [cb.dataset.name, cb.checked && !cb.disabled]));
+}
+
+function changes() {
+  const want = wanted(), out = [];
+  for (const p of PATCHES) {
+    const st = states[p.name];
+    if (want[p.name] && st === "original") out.push([p, "apply"]);
+    if (!want[p.name] && st === "applied") out.push([p, "revert"]);
+  }
+  return out;
+}
+
+function plan() {
+  if (!input) return;
+  const c = changes();
+  $("download").disabled = c.length === 0;
+  $("plan").textContent = c.length === 0 ? "Nothing to change: the file already matches your ticks."
+    : c.map(([p, how]) => (how === "apply" ? "add " : "remove ") + p.name).join(", ");
+}
+
+function say(kind, html) {
+  const v = $("verdict");
+  v.className = "col-note " + kind;
+  v.innerHTML = "<span>" + html + "</span>";
+}
+
+async function load(file) {
+  const bytes = new Uint8Array(await file.arrayBuffer());
+  inputName = file.name || "COLONIZE.EXE";
+  if (bytes[0] !== 0x4d || bytes[1] !== 0x5a) {
+    input = null; states = {}; renderList(); plan();
+    return say("col-note--danger", "<strong>Not a Windows program.</strong> Choose the " +
+      "<code>COLONIZE.EXE</code> from the game folder.");
+  }
+  input = bytes;
+  states = Object.fromEntries(PATCHES.map((p) => [p.name, state(bytes, p)]));
+  const hash = await sha256(bytes);
+  const fits = Object.values(states).every((s) => s === "original" || s === "applied");
+  const have = PATCHES.filter((p) => states[p.name] === "applied").map((p) => p.name);
+  if (hash === TARGET) {
+    say("col-note--ok", "<strong>This is the supported build.</strong> Every patch applies.");
+  } else if (fits && have.length) {
+    say("col-note--ok", "<strong>The supported build, already patched</strong> with " +
+      have.join(", ") + ". Untick a patch to take it out again.");
+  } else if (fits) {
+    say("col-note--warn", "<strong>The bytes fit, but the checksum is not the one these " +
+      "patches were made on.</strong> Proceed only if you know why.");
+  } else {
+    say("col-note--danger", "<strong>This is a different build of the game.</strong> The " +
+      "patches were made on the updated 1995 release (MicroProse's update leaves the old " +
+      "file beside it as <code>COLONIZE.$00</code>). Patches that do not fit are switched off.");
+  }
+  $("result").textContent = hash ? "Your file: SHA-256 " + hash : "";
+  renderList();
+  plan();
+}
+
+$("download").addEventListener("click", async () => {
+  const out = input.slice();
+  for (const [p, how] of changes())
+    for (const s of p.sites) out.set(how === "apply" ? s.new_ : s.expect_, s.at_);
+  const hash = await sha256(out);
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(new Blob([out], { type: "application/octet-stream" }));
+  a.download = /\.exe$/i.test(inputName) ? inputName : "COLONIZE.EXE";
+  document.body.append(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(a.href), 10000);
+  $("result").textContent = (hash ? "Downloaded: SHA-256 " + hash : "Downloaded.") +
+    "  Load it here again to check which patches it carries.";
+});
+
+$("file").addEventListener("change", (e) => e.target.files[0] && load(e.target.files[0]));
+const drop = $("drop");
+drop.addEventListener("dragover", (e) => { e.preventDefault(); drop.classList.add("is-over"); });
+drop.addEventListener("dragleave", () => drop.classList.remove("is-over"));
+drop.addEventListener("drop", (e) => {
+  e.preventDefault(); drop.classList.remove("is-over");
+  if (e.dataTransfer.files[0]) load(e.dataTransfer.files[0]);
+});
+
+function theme(t) {
+  if (t === "auto") document.documentElement.removeAttribute("data-theme");
+  else document.documentElement.dataset.theme = t;
+  for (const b of document.querySelectorAll("#theme button"))
+    b.classList.toggle("is-active", b.dataset.t === t);
+  try { localStorage.setItem("wp-theme", t); } catch (e) { /* private window */ }
+}
+for (const b of document.querySelectorAll("#theme button"))
+  b.addEventListener("click", () => theme(b.dataset.t));
+try { theme(localStorage.getItem("wp-theme") || "auto"); } catch (e) { theme("auto"); }
+
+$("count").textContent = PATCHES.length;
+$("target").textContent = TARGET.slice(0, 16) + "…";
+renderList();
+</script>
+</body>
+</html>
