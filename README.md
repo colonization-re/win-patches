@@ -20,9 +20,9 @@ Keep a copy of your original `COLONIZE.EXE` whichever way you choose.
 
 ### In a browser
 
-Go to **<https://colonization-re.github.io/win-patches/>**, which serves the latest
-[release](https://github.com/colonization-re/win-patches/releases). Every release also
-carries the page as `win-patches.html`, and a checkout has it as
+Go to **<https://colonization-re.github.io/win-patches/>**. Every
+[release](https://github.com/colonization-re/win-patches/releases) also carries the page
+as `win-patches.html`, and a checkout has it as
 [`dist/index.html`](dist/index.html): the site serves that file unchanged. It is one
 self-contained file and works from disk. Choose your `COLONIZE.EXE`,
 tick the patches you want and download the result. Everything happens in the page: the

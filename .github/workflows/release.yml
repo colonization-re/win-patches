@@ -1,12 +1,14 @@
-# Release a version, and only then publish it as the site.
+# Release a version of the patches. Webpage-only changes can publish from main through
+# pages.yml; this workflow creates the release assets and then publishes that release's
+# page too.
 #
 #   echo 0.0.2 > VERSION && python3 build.py && git commit -am "Release 0.0.2"
 #   git tag v0.0.2 && git push origin main v0.0.2
 #
-#   https://colonization-re.github.io/win-patches/    the latest release's page
+#   https://colonization-re.github.io/win-patches/    the currently deployed page
 #
-# The site is dist/ exactly as committed at the tag, after build.py --check has proved
-# it matches a fresh build, so the page players use is the file in the repository.
+# The release page is dist/ exactly as committed at the tag, after build.py --check has
+# proved it matches a fresh build, so the released page is the file in the repository.
 # The release carries the same page and the IPS files. These asset names stay fixed,
 # so .../releases/latest/download/win-patches.html always works:
 #

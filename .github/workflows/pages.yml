@@ -1,0 +1,82 @@
+# Publish webpage-only changes from main. Versioned patch releases still go through
+# release.yml, which creates the GitHub release assets and may also deploy Pages.
+name: pages
+
+on:
+  push:
+    branches: ["main"]
+    paths:
+      - ".github/workflows/pages.yml"
+      - "build.py"
+      - "dist/index.html"
+      - "web/**"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  decide:
+    runs-on: ubuntu-latest
+    outputs:
+      deploy: ${{ steps.changed.outputs.deploy }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - id: changed
+        shell: bash
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "deploy=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          files="$(git diff --name-only "${{ github.event.before }}" "${{ github.sha }}")"
+          page_changed=false
+          patch_changed=false
+
+          while IFS= read -r file; do
+            case "$file" in
+              web/*|dist/index.html|build.py|.github/workflows/pages.yml)
+                page_changed=true
+                ;;
+            esac
+            case "$file" in
+              VERSION|patch.py|patches/*|ips/*)
+                patch_changed=true
+                ;;
+            esac
+          done <<< "$files"
+
+          if [ "$page_changed" = true ] && [ "$patch_changed" = false ]; then
+            echo "deploy=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "deploy=false" >> "$GITHUB_OUTPUT"
+          fi
+
+  deploy:
+    needs: decide
+    if: needs.decide.outputs.deploy == 'true'
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    permissions:
+      pages: write
+      id-token: write
+    concurrency:
+      group: pages
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v4
+      - name: nasm, to re-assemble code sites
+        run: sudo apt-get update && sudo apt-get install -y nasm
+      - name: manifests consistent, generated files current
+        run: python3 build.py --check
+      - name: package dist/ for Pages
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist/
+      - id: deployment
+        uses: actions/deploy-pages@v4

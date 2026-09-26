@@ -1,5 +1,5 @@
-# Check every push. Nothing here publishes: the site changes only when release.yml
-# releases a new version.
+# Check every push. Publishing lives in pages.yml for webpage-only main changes and in
+# release.yml for versioned patch releases.
 name: check
 
 on:

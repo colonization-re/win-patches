@@ -44,10 +44,11 @@ explanation. Don't bring over evidence paths, tools or anything else from win-de
 - **Keep `status` honest.** "Seen in play" means a person saw it in the running game.
   Emulator checks and byte checks are not that.
 
-## Releasing
+## Publishing and releasing
 
-The site, <https://colonization-re.github.io/win-patches/>, changes only on a release.
-Pushing to `main` publishes nothing.
+The site, <https://colonization-re.github.io/win-patches/>, updates from `main` for
+webpage-only changes through `pages.yml`. Changes to patch/version artifacts
+(`VERSION`, `patch.py`, `patches/`, `ips/`) still publish only through a release.
 
 ```sh
 echo 0.0.2 > VERSION && python3 build.py        # the page shows the version
