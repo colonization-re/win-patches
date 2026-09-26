@@ -110,10 +110,12 @@ def page(patches):
     if hashlib.sha256(css).hexdigest() != pin['sha256']:
         raise SystemExit(f'build: web/vendor/{pin["asset"]} does not match its pin '
                          f'({pin["tag"]}); do not edit the vendored file')
+    web_patches = sorted(patches.values(), key=lambda p: (p['name'] != 'water-cycling',
+                                                          p['name']))
     data = [dict({k: p[k] for k in WEB_FIELDS if k in p},
                  sites=[{k: s[k] for k in ('file_offset', 'expect', 'new')}
                         for s in p['sites']])
-            for p in patches.values()]
+            for p in web_patches]
     html = open(TEMPLATE).read()
     for token, value in (('/*COL_CSS*/', css.decode()),
                          ('/*VERSION*/', json.dumps(version())),

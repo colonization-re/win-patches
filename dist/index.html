@@ -1666,12 +1666,6 @@ dl.col-dl dd {
 <div class="col-bar">
   <div class="col-bar-in">
     <a class="col-brand" href="https://github.com/colonization-re/win-patches"><span class="col-brand-mark"></span> win-patches</a>
-    <span class="col-badge col-badge--line">Colonization for Windows</span>
-    <div class="col-push col-segmented" id="theme">
-      <button data-t="light">Light</button>
-      <button data-t="dark">Dark</button>
-      <button data-t="auto" class="is-active">Auto</button>
-    </div>
   </div>
 </div>
 
@@ -1681,12 +1675,6 @@ dl.col-dl dd {
     <h1>Patch your own COLONIZE.EXE</h1>
     <p class="col-lead">Tick the fixes you want and download the result. This page changes a
       few bytes in your copy of the game, in your browser: the file is never uploaded.</p>
-    <dl class="col-plate-meta">
-      <div><dt>Patches</dt><dd id="count">–</dd></div>
-      <div><dt>For</dt><dd>the updated 1995 release</dd></div>
-      <div><dt>SHA-256</dt><dd class="col-mono" id="target">–</dd></div>
-      <div><dt>Release</dt><dd class="col-mono"><a id="version">–</a></dd></div>
-    </dl>
   </div>
 
   <section class="col-card wp-drop" id="drop">
@@ -1729,9 +1717,8 @@ dl.col-dl dd {
 <script>
 "use strict";
 const VERSION = "0.0.1";
-const PATCHES = [{"name":"cheat-picture-viewer","kind":"feature","title":"Cheat menu: \"Show Colony Sites\" (an empty stub) becomes the hidden Picture Viewer","why":["The developers' picture viewer, debug_picture_viewer (1040:46aa), asks \"View which","picture #?\" and shows any of 107 CVPC pictures or SPRT sprites in a 640x480 window. Its","command (811) is dispatched but no menu item carries it. Meanwhile the Cheat menu's","\"Show Colony Sites\" (809) calls show_colony_sites (1048:b92c), whose body is empty.","","In the command dispatcher the 809 arm (`push cs / call near show_colony_sites /","jmp near exit`) sits 14 bytes before the 811 arm (`call far debug_picture_viewer /","jmp near exit`). A 2-byte `jmp short` at the head of the 809 arm lands on the 811 arm,","so no relocation is added. The menu label is a DGROUP string used only by","cheat_menu_toggle; it is rewritten in place, NUL-padded to its original 18 bytes."],"test":["In a game, type Ctrl+W, Ctrl+I, Ctrl+N to raise the Cheat menu.","Cheat > Picture Viewer. Enter a number 0..106 (e.g. 5). A 640x480 window titled","\"Close Window to Reset Palette\" shows the picture; close it and the map's colours return.","A number outside 0..106 closes at once. The other Cheat items are unchanged."],"status":"bytes and behaviour checked; not yet confirmed in play","target":{"file":"COLONIZE.EXE","sha256":"59a0e173452924603112cf410483021c02ef0cd3512e310d8966b21e0c176291"},"sites":[{"file_offset":"0xea33f","expect":"0ee8","new":"eb0c"},{"file_offset":"0x62738","expect":"53686f7720436f6c6f6e7920536974657300","new":"506963747572652056696577657200000000"}]},{"name":"intro-pages-5s","kind":"qol","title":"New game: the introduction pages advance every 5 seconds instead of every 10","why":["While a new map is generated, check_timer_tick (1040:843c) shows the ten pages of","opening_scene (credits, then who you are, which nation, which monarch) one every 600","ticks of MSGetTicks, which counts 60ths of a second: 10 s a page. new_game_setup then","spins on check_timer_tick(1) until the last page has shown, so a player who does not","click waits up to ~100 s. A click or key already dismisses the rest once the map is","done; this only shortens the wait for a player who reads rather than clicks.","","The threshold is the imm32 of `cmp eax,600`; 300 = 5 s keeps a one-line page readable."],"test":["Start a new game and do not click during map generation. The pages turn about every","5 s (was 10 s), and the game reaches the map about half as soon. A click still skips."],"status":"bytes and behaviour checked; not yet confirmed in play","target":{"file":"COLONIZE.EXE","sha256":"59a0e173452924603112cf410483021c02ef0cd3512e310d8966b21e0c176291"},"sites":[{"file_offset":"0x1d466","expect":"5802","new":"2c01"}]},{"name":"pedia-colonist-icons","kind":"fix","title":"Colonopedia: the Free Colonist page draws its three extra icons side by side","why":["PediaWin_DoUnitArticle (1060:3a6d) draws the Free Colonist page's icon row: one colonist,","then three more (specs 0x19..0x1b) in a loop, then the 21 experts. The three-icon loop","counts them into `col` but never advances `x` (register DI), so all three land on the","second square -- and so does the first expert, which is drawn before its loop steps x.","Four figures share one square and only the last is visible. `col` proves the intent: it","leaves that loop at 4, and the expert loop wraps at 17 as if four positions were used.","","Same-length fix: inside the loop, `inc word [bp-0xc]` (col++) becomes `add di,0x20`","(x += 32, the step every other icon on the page uses), and col starts at 4 instead of 1.","col is not read inside the loop, so it leaves the loop at 4 exactly as before."],"test":["Start or load any game, open the Colonopedia, Units, Free Colonist.","Before: the second square holds four overlapped figures (the last drawn on top), so the","first row shows 14 distinct squares. After: the colonist, the three variants and the","experts each get their own square; the first row is 17 icons wide (x = 20..532) and","wraps, as the expert loop was written to do. Check the 17th icon is inside the page."],"status":"bytes and behaviour checked; not yet confirmed in play","target":{"file":"COLONIZE.EXE","sha256":"59a0e173452924603112cf410483021c02ef0cd3512e310d8966b21e0c176291"},"sites":[{"file_offset":"0x3304c","expect":"01","new":"04"},{"file_offset":"0x33096","expect":"ff46f4","new":"83c720"}]},{"name":"water-cycling","kind":"feature","title":"Water Color Cycling: river currents and beach surf move, as in the DOS version","why":["The DOS build rotates 8 palette entries (CYCLE.DAT: 0x78..0x7F) from the timer interrupt, and","only a few pixels use them: a line down each river (PHYS0.SS frames 1..31), the surf inside the","beach pieces (150..153) and sparkles on the sea lane -- rivers flow, surf moves, the open sea","stays still.","","The Windows water sheet, picture 0xcc, was drawn the same way. init_water_sprites installs it","at palette 40 with 102 colours instead of 96; its extra raw 96..101 -- game entries 136..141 --","sit only on the river centres of its sprites 0..31, the surf of 150..153 and the fish, and it","cuts exactly those cells over sheet 201's plain rivers and beach (its table at SEG20:0x4526 is","g_art_base[28]). The Game Options item \"Water Color Cycling\" and its saved bit","(GAMEFLAG_NO_WATER_CYCLING, 0x100 of SEG20:0x7784) survived too. Nothing ever read the bit or","rotated the entries.","","This patch rotates entries 136..141 up by one, as DOS does, on every cursor blink of","GameBrains_DoHuman's idle phase (25 ticks, 0.42 s), through the game's own dead palette_rotate;","bumps the palette's seed so GRPort_ColorSync re-sends the WinG colour table; and re-blits the","map view. Off in Game Options, off here.","","No byte changes length. The code is written over the dead palette_cross_fade (1068:0d94);","the three relocation records whose sites fell inside those bytes are moved onto the new","code's three far operands; the two records behind DoHuman's calls to","MiniWin_HighlightActiveUnit are pointed at the hook, which runs the tick and then jumps","to MiniWin_HighlightActiveUnit with the caller's stack untouched."],"known_limits":["Water moves only while the game waits for input on the map (the cursor blink, 0.42 s a step --","DOS steps every ~0.29 s from the timer), not during unit moves or AI turns. On a real","256-colour palette device the colours reach the screen through the WinG colour table by WinG's","translated blit; that mode is untested."],"test":["Start or load a game and leave the map idle: the centre line of every river and the surf","along coasts glint and move, about twice a second; open sea, lakes, marsh and the fog-of-war","edge do not move. Game Options > Water Color Cycling off: it stops. Open and close a colony:","nothing else changes."],"status":"seen in play 2026-09-26 (Wine 11 + otvdm on macOS): river currents and beach surf move, the rest of the water does not","target":{"file":"COLONIZE.EXE","sha256":"59a0e173452924603112cf410483021c02ef0cd3512e310d8966b21e0c176291"},"sites":[{"file_offset":"0x102b94","expect":"8cd09045558bec1e8ed883ec0c56578b7e0a0bff7c0ac45e062639bf0e047d20660fbfc766501e68772b68000068c02a0ee8228783c40c5f5e8d66fe1f5d4dcbc45e0626ffb718049affff000083c4028956f88946f6c45e0626ffb71a049affff000083c4028956f48946f233f6e944018bc6990346f683d200b9","new":"1e8cd08ed8b8ffff8ec026f6068577017538506a016a066888005068ac010ee8fff883c40a0726ff06b205750526ff06b205ff36524cff36504cff36464cff36444c9affff000083c4081feaffff0000cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"},{"file_offset":"0x110b9e","expect":"0300dd0d0f0073d0","new":"0300e00d0d00db0f"},{"file_offset":"0x110ba6","expect":"0204bf0d2200c02a","new":"02009a0d14000000"},{"file_offset":"0x110b96","expect":"0300f30d0f0073d0","new":"0300d70d0900f107"},{"file_offset":"0x77886","expect":"0300dc330d00db0f","new":"0300dc330e00940d"},{"file_offset":"0x77bae","expect":"030018340d00db0f","new":"030018340e00940d"}]}];
+const PATCHES = [{"name":"water-cycling","kind":"feature","title":"Water Color Cycling: river currents and beach surf move, as in the DOS version","why":["The DOS build rotates 8 palette entries (CYCLE.DAT: 0x78..0x7F) from the timer interrupt, and","only a few pixels use them: a line down each river (PHYS0.SS frames 1..31), the surf inside the","beach pieces (150..153) and sparkles on the sea lane -- rivers flow, surf moves, the open sea","stays still.","","The Windows water sheet, picture 0xcc, was drawn the same way. init_water_sprites installs it","at palette 40 with 102 colours instead of 96; its extra raw 96..101 -- game entries 136..141 --","sit only on the river centres of its sprites 0..31, the surf of 150..153 and the fish, and it","cuts exactly those cells over sheet 201's plain rivers and beach (its table at SEG20:0x4526 is","g_art_base[28]). The Game Options item \"Water Color Cycling\" and its saved bit","(GAMEFLAG_NO_WATER_CYCLING, 0x100 of SEG20:0x7784) survived too. Nothing ever read the bit or","rotated the entries.","","This patch rotates entries 136..141 up by one, as DOS does, on every cursor blink of","GameBrains_DoHuman's idle phase (25 ticks, 0.42 s), through the game's own dead palette_rotate;","bumps the palette's seed so GRPort_ColorSync re-sends the WinG colour table; and re-blits the","map view. Off in Game Options, off here.","","No byte changes length. The code is written over the dead palette_cross_fade (1068:0d94);","the three relocation records whose sites fell inside those bytes are moved onto the new","code's three far operands; the two records behind DoHuman's calls to","MiniWin_HighlightActiveUnit are pointed at the hook, which runs the tick and then jumps","to MiniWin_HighlightActiveUnit with the caller's stack untouched."],"known_limits":["Water moves only while the game waits for input on the map (the cursor blink, 0.42 s a step --","DOS steps every ~0.29 s from the timer), not during unit moves or AI turns. On a real","256-colour palette device the colours reach the screen through the WinG colour table by WinG's","translated blit; that mode is untested."],"test":["Start or load a game and leave the map idle: the centre line of every river and the surf","along coasts glint and move, about twice a second; open sea, lakes, marsh and the fog-of-war","edge do not move. Game Options > Water Color Cycling off: it stops. Open and close a colony:","nothing else changes."],"status":"seen in play 2026-09-26 (Wine 11 + otvdm on macOS): river currents and beach surf move, the rest of the water does not","target":{"file":"COLONIZE.EXE","sha256":"59a0e173452924603112cf410483021c02ef0cd3512e310d8966b21e0c176291"},"sites":[{"file_offset":"0x102b94","expect":"8cd09045558bec1e8ed883ec0c56578b7e0a0bff7c0ac45e062639bf0e047d20660fbfc766501e68772b68000068c02a0ee8228783c40c5f5e8d66fe1f5d4dcbc45e0626ffb718049affff000083c4028956f88946f6c45e0626ffb71a049affff000083c4028956f48946f233f6e944018bc6990346f683d200b9","new":"1e8cd08ed8b8ffff8ec026f6068577017538506a016a066888005068ac010ee8fff883c40a0726ff06b205750526ff06b205ff36524cff36504cff36464cff36444c9affff000083c4081feaffff0000cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"},{"file_offset":"0x110b9e","expect":"0300dd0d0f0073d0","new":"0300e00d0d00db0f"},{"file_offset":"0x110ba6","expect":"0204bf0d2200c02a","new":"02009a0d14000000"},{"file_offset":"0x110b96","expect":"0300f30d0f0073d0","new":"0300d70d0900f107"},{"file_offset":"0x77886","expect":"0300dc330d00db0f","new":"0300dc330e00940d"},{"file_offset":"0x77bae","expect":"030018340d00db0f","new":"030018340e00940d"}]},{"name":"cheat-picture-viewer","kind":"feature","title":"Cheat menu: \"Show Colony Sites\" (an empty stub) becomes the hidden Picture Viewer","why":["The developers' picture viewer, debug_picture_viewer (1040:46aa), asks \"View which","picture #?\" and shows any of 107 CVPC pictures or SPRT sprites in a 640x480 window. Its","command (811) is dispatched but no menu item carries it. Meanwhile the Cheat menu's","\"Show Colony Sites\" (809) calls show_colony_sites (1048:b92c), whose body is empty.","","In the command dispatcher the 809 arm (`push cs / call near show_colony_sites /","jmp near exit`) sits 14 bytes before the 811 arm (`call far debug_picture_viewer /","jmp near exit`). A 2-byte `jmp short` at the head of the 809 arm lands on the 811 arm,","so no relocation is added. The menu label is a DGROUP string used only by","cheat_menu_toggle; it is rewritten in place, NUL-padded to its original 18 bytes."],"test":["In a game, type Ctrl+W, Ctrl+I, Ctrl+N to raise the Cheat menu.","Cheat > Picture Viewer. Enter a number 0..106 (e.g. 5). A 640x480 window titled","\"Close Window to Reset Palette\" shows the picture; close it and the map's colours return.","A number outside 0..106 closes at once. The other Cheat items are unchanged."],"status":"bytes and behaviour checked; not yet confirmed in play","target":{"file":"COLONIZE.EXE","sha256":"59a0e173452924603112cf410483021c02ef0cd3512e310d8966b21e0c176291"},"sites":[{"file_offset":"0xea33f","expect":"0ee8","new":"eb0c"},{"file_offset":"0x62738","expect":"53686f7720436f6c6f6e7920536974657300","new":"506963747572652056696577657200000000"}]},{"name":"intro-pages-5s","kind":"qol","title":"New game: the introduction pages advance every 5 seconds instead of every 10","why":["While a new map is generated, check_timer_tick (1040:843c) shows the ten pages of","opening_scene (credits, then who you are, which nation, which monarch) one every 600","ticks of MSGetTicks, which counts 60ths of a second: 10 s a page. new_game_setup then","spins on check_timer_tick(1) until the last page has shown, so a player who does not","click waits up to ~100 s. A click or key already dismisses the rest once the map is","done; this only shortens the wait for a player who reads rather than clicks.","","The threshold is the imm32 of `cmp eax,600`; 300 = 5 s keeps a one-line page readable."],"test":["Start a new game and do not click during map generation. The pages turn about every","5 s (was 10 s), and the game reaches the map about half as soon. A click still skips."],"status":"bytes and behaviour checked; not yet confirmed in play","target":{"file":"COLONIZE.EXE","sha256":"59a0e173452924603112cf410483021c02ef0cd3512e310d8966b21e0c176291"},"sites":[{"file_offset":"0x1d466","expect":"5802","new":"2c01"}]},{"name":"pedia-colonist-icons","kind":"fix","title":"Colonopedia: the Free Colonist page draws its three extra icons side by side","why":["PediaWin_DoUnitArticle (1060:3a6d) draws the Free Colonist page's icon row: one colonist,","then three more (specs 0x19..0x1b) in a loop, then the 21 experts. The three-icon loop","counts them into `col` but never advances `x` (register DI), so all three land on the","second square -- and so does the first expert, which is drawn before its loop steps x.","Four figures share one square and only the last is visible. `col` proves the intent: it","leaves that loop at 4, and the expert loop wraps at 17 as if four positions were used.","","Same-length fix: inside the loop, `inc word [bp-0xc]` (col++) becomes `add di,0x20`","(x += 32, the step every other icon on the page uses), and col starts at 4 instead of 1.","col is not read inside the loop, so it leaves the loop at 4 exactly as before."],"test":["Start or load any game, open the Colonopedia, Units, Free Colonist.","Before: the second square holds four overlapped figures (the last drawn on top), so the","first row shows 14 distinct squares. After: the colonist, the three variants and the","experts each get their own square; the first row is 17 icons wide (x = 20..532) and","wraps, as the expert loop was written to do. Check the 17th icon is inside the page."],"status":"bytes and behaviour checked; not yet confirmed in play","target":{"file":"COLONIZE.EXE","sha256":"59a0e173452924603112cf410483021c02ef0cd3512e310d8966b21e0c176291"},"sites":[{"file_offset":"0x3304c","expect":"01","new":"04"},{"file_offset":"0x33096","expect":"ff46f4","new":"83c720"}]}];
 const TARGET = PATCHES[0].target.sha256;
-const KIND = { fix: "col-badge--ok", feature: "col-badge--brand", qol: "col-badge--line" };
 const $ = (id) => document.getElementById(id);
 let input = null, inputName = "COLONIZE.EXE", states = {};
 
@@ -1783,37 +1770,37 @@ function renderList() {
     strong.textContent = p.title;
     title.append(strong);
     label.append(cb, title);
-    const kind = document.createElement("span");
-    kind.className = "col-badge " + (KIND[p.kind] || "");
-    kind.textContent = p.kind;
-    head.append(label, kind);
-    if (st) {
-      const b = document.createElement("span");
-      b.className = "col-badge " + ({ original: "", applied: "col-badge--ok" }[st] ?? "col-badge--danger");
-      b.textContent = { original: "not in your file", applied: "already in your file",
-                        mismatch: "does not fit this file", partial: "half applied" }[st];
-      head.append(b);
-    }
-    const see = document.createElement("p");
-    see.className = "col-dim";
-    see.textContent = p.test.join(" ");
+    head.append(label);
     const more = document.createElement("details");
     more.className = "col-disclosure";
     const sum = document.createElement("summary");
-    sum.textContent = "How it works";
+    sum.textContent = "Details";
+    more.append(sum);
+    const meta = document.createElement("p");
+    meta.className = "col-meta";
+    meta.textContent = p.kind;
+    if (st) {
+      meta.textContent += " · " + { original: "not in your file", applied: "already in your file",
+                                    mismatch: "does not fit this file", partial: "half applied" }[st];
+    }
+    more.append(meta);
+    const test = document.createElement("p");
+    test.className = "col-dim";
+    test.textContent = "How to test: " + p.test.join(" ");
+    more.append(test);
     const why = document.createElement("p");
     why.className = "wp-why col-dim";
     // manifest lines are wrapped prose; an empty line separates paragraphs
     why.textContent = p.why.join("\n").split(/\n\s*\n/)
       .map((para) => para.replace(/\n/g, " ")).join("\n\n");
-    more.append(sum, why);
+    more.append(why);
     if (p.known_limits) {
       const lim = document.createElement("p");
       lim.className = "col-dim";
       lim.textContent = "Limits: " + p.known_limits.join(" ");
       more.append(lim);
     }
-    row.append(head, see, more);
+    row.append(head, more);
     box.append(row);
   }
 }
@@ -1901,21 +1888,6 @@ drop.addEventListener("drop", (e) => {
   if (e.dataTransfer.files[0]) load(e.dataTransfer.files[0]);
 });
 
-function theme(t) {
-  if (t === "auto") document.documentElement.removeAttribute("data-theme");
-  else document.documentElement.dataset.theme = t;
-  for (const b of document.querySelectorAll("#theme button"))
-    b.classList.toggle("is-active", b.dataset.t === t);
-  try { localStorage.setItem("wp-theme", t); } catch (e) { /* private window */ }
-}
-for (const b of document.querySelectorAll("#theme button"))
-  b.addEventListener("click", () => theme(b.dataset.t));
-try { theme(localStorage.getItem("wp-theme") || "auto"); } catch (e) { theme("auto"); }
-
-$("count").textContent = PATCHES.length;
-$("target").textContent = TARGET.slice(0, 16) + "…";
-$("version").textContent = "v" + VERSION;
-$("version").href = "https://github.com/colonization-re/win-patches/releases/tag/v" + VERSION;
 renderList();
 </script>
 </body>

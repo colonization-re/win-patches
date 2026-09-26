@@ -25,12 +25,6 @@
 <div class="col-bar">
   <div class="col-bar-in">
     <a class="col-brand" href="https://github.com/colonization-re/win-patches"><span class="col-brand-mark"></span> win-patches</a>
-    <span class="col-badge col-badge--line">Colonization for Windows</span>
-    <div class="col-push col-segmented" id="theme">
-      <button data-t="light">Light</button>
-      <button data-t="dark">Dark</button>
-      <button data-t="auto" class="is-active">Auto</button>
-    </div>
   </div>
 </div>
 
@@ -40,12 +34,6 @@
     <h1>Patch your own COLONIZE.EXE</h1>
     <p class="col-lead">Tick the fixes you want and download the result. This page changes a
       few bytes in your copy of the game, in your browser: the file is never uploaded.</p>
-    <dl class="col-plate-meta">
-      <div><dt>Patches</dt><dd id="count">–</dd></div>
-      <div><dt>For</dt><dd>the updated 1995 release</dd></div>
-      <div><dt>SHA-256</dt><dd class="col-mono" id="target">–</dd></div>
-      <div><dt>Release</dt><dd class="col-mono"><a id="version">–</a></dd></div>
-    </dl>
   </div>
 
   <section class="col-card wp-drop" id="drop">
@@ -90,7 +78,6 @@
 const VERSION = /*VERSION*/;
 const PATCHES = /*PATCHES*/;
 const TARGET = PATCHES[0].target.sha256;
-const KIND = { fix: "col-badge--ok", feature: "col-badge--brand", qol: "col-badge--line" };
 const $ = (id) => document.getElementById(id);
 let input = null, inputName = "COLONIZE.EXE", states = {};
 
@@ -142,37 +129,37 @@ function renderList() {
     strong.textContent = p.title;
     title.append(strong);
     label.append(cb, title);
-    const kind = document.createElement("span");
-    kind.className = "col-badge " + (KIND[p.kind] || "");
-    kind.textContent = p.kind;
-    head.append(label, kind);
-    if (st) {
-      const b = document.createElement("span");
-      b.className = "col-badge " + ({ original: "", applied: "col-badge--ok" }[st] ?? "col-badge--danger");
-      b.textContent = { original: "not in your file", applied: "already in your file",
-                        mismatch: "does not fit this file", partial: "half applied" }[st];
-      head.append(b);
-    }
-    const see = document.createElement("p");
-    see.className = "col-dim";
-    see.textContent = p.test.join(" ");
+    head.append(label);
     const more = document.createElement("details");
     more.className = "col-disclosure";
     const sum = document.createElement("summary");
-    sum.textContent = "How it works";
+    sum.textContent = "Details";
+    more.append(sum);
+    const meta = document.createElement("p");
+    meta.className = "col-meta";
+    meta.textContent = p.kind;
+    if (st) {
+      meta.textContent += " · " + { original: "not in your file", applied: "already in your file",
+                                    mismatch: "does not fit this file", partial: "half applied" }[st];
+    }
+    more.append(meta);
+    const test = document.createElement("p");
+    test.className = "col-dim";
+    test.textContent = "How to test: " + p.test.join(" ");
+    more.append(test);
     const why = document.createElement("p");
     why.className = "wp-why col-dim";
     // manifest lines are wrapped prose; an empty line separates paragraphs
     why.textContent = p.why.join("\n").split(/\n\s*\n/)
       .map((para) => para.replace(/\n/g, " ")).join("\n\n");
-    more.append(sum, why);
+    more.append(why);
     if (p.known_limits) {
       const lim = document.createElement("p");
       lim.className = "col-dim";
       lim.textContent = "Limits: " + p.known_limits.join(" ");
       more.append(lim);
     }
-    row.append(head, see, more);
+    row.append(head, more);
     box.append(row);
   }
 }
@@ -260,21 +247,6 @@ drop.addEventListener("drop", (e) => {
   if (e.dataTransfer.files[0]) load(e.dataTransfer.files[0]);
 });
 
-function theme(t) {
-  if (t === "auto") document.documentElement.removeAttribute("data-theme");
-  else document.documentElement.dataset.theme = t;
-  for (const b of document.querySelectorAll("#theme button"))
-    b.classList.toggle("is-active", b.dataset.t === t);
-  try { localStorage.setItem("wp-theme", t); } catch (e) { /* private window */ }
-}
-for (const b of document.querySelectorAll("#theme button"))
-  b.addEventListener("click", () => theme(b.dataset.t));
-try { theme(localStorage.getItem("wp-theme") || "auto"); } catch (e) { theme("auto"); }
-
-$("count").textContent = PATCHES.length;
-$("target").textContent = TARGET.slice(0, 16) + "…";
-$("version").textContent = "v" + VERSION;
-$("version").href = "https://github.com/colonization-re/win-patches/releases/tag/v" + VERSION;
 renderList();
 </script>
 </body>
