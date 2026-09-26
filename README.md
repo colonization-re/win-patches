@@ -20,9 +20,11 @@ Keep a copy of your original `COLONIZE.EXE` whichever way you choose.
 
 ### In a browser
 
-Go to **<https://colonization-re.github.io/win-patches/>**, or open
-[`dist/index.html`](dist/index.html) from a checkout: the site serves that same file
-unchanged. It is one self-contained file and works from disk. Choose your `COLONIZE.EXE`,
+Go to **<https://colonization-re.github.io/win-patches/>**, which serves the latest
+[release](https://github.com/colonization-re/win-patches/releases). Every release also
+carries the page as `win-patches.html`, and a checkout has it as
+[`dist/index.html`](dist/index.html): the site serves that file unchanged. It is one
+self-contained file and works from disk. Choose your `COLONIZE.EXE`,
 tick the patches you want and download the result. Everything happens in the page: the
 file is never uploaded. The page makes no network requests at all, and its
 Content-Security-Policy tells the browser to refuse any it might try.
@@ -49,7 +51,8 @@ a different build or a damaged file. It never overwrites your file unless you pa
 
 ### With an IPS patcher
 
-Each patch is also an IPS file in [`ips/`](ips/). They work with any IPS tool, for
+Each patch is also an IPS file, in [`ips/`](ips/) and attached to every
+[release](https://github.com/colonization-re/win-patches/releases). They work with any IPS tool, for
 example [Floating IPS](https://github.com/Alcaro/Flips) or the browser-based
 [RomPatcher.js](https://www.marcrobledo.com/RomPatcher.js/). **IPS does not check the file
 it patches**, so first make sure yours is the build below. The browser page and

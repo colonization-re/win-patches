@@ -1,9 +1,5 @@
-# Check every push; publish the patcher page to GitHub Pages from main.
-#
-#   https://colonization-re.github.io/win-patches/
-#
-# What is published is dist/ exactly as committed, after build.py --check has proved it
-# matches a fresh build. The page anyone downloads is the file in the repository.
+# Check every push. Nothing here publishes: the site changes only when release.yml
+# releases a new version.
 name: check
 
 on:
@@ -11,11 +7,9 @@ on:
   pull_request:
   workflow_dispatch:
 
-# Supersede an in-flight PR run when the branch is pushed again. Runs on main are never
-# cancelled, so a deploy is not killed halfway.
 concurrency:
   group: check-${{ github.ref }}
-  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+  cancel-in-progress: true
 
 permissions:
   contents: read
@@ -33,25 +27,3 @@ jobs:
         run: |
           python3 patch.py list
           python3 -m py_compile patch.py build.py
-      - name: package dist/ for Pages
-        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: dist/
-
-  deploy:
-    needs: check
-    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
-    runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    permissions:
-      pages: write
-      id-token: write
-    concurrency:
-      group: pages
-      cancel-in-progress: false
-    steps:
-      - id: deployment
-        uses: actions/deploy-pages@v4

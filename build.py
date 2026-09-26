@@ -3,6 +3,7 @@
 
     python3 build.py            # ips/*.ips and dist/index.html
     python3 build.py --check    # fail if either is stale, or a manifest is inconsistent
+    python3 build.py --notes    # print the release notes for VERSION (the release workflow)
 
 Neither needs the game. The derived files are committed so the web page works from a
 checkout (or GitHub Pages) with no build, and --check is what CI runs to keep them
@@ -13,13 +14,14 @@ honest. What --check proves without the EXE:
   * no two patches write the same byte, so any subset can be applied;
   * each `code` site's .asm assembles (when nasm is installed) to exactly its `new`;
   * the vendored col.css matches its pin (web/vendor/col-css.json);
+  * VERSION is MAJOR.MINOR.PATCH; the page shows it, and a release is tagged with it;
   * ips/ and dist/ are byte-identical to a fresh build.
 
 What only `python3 patch.py verify --exe COLONIZE.EXE` can prove, because it needs the
 game: that every address resolves through the EXE's own NE header, that the original
 bytes are there, and that no relocation chain runs through new code.
 """
-import argparse, hashlib, json, os, shutil, subprocess, sys, tempfile
+import argparse, hashlib, json, os, re, shutil, subprocess, sys, tempfile
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
@@ -29,7 +31,15 @@ IPS_DIR = os.path.join(HERE, 'ips')
 TEMPLATE = os.path.join(HERE, 'web', 'index.html')
 VENDOR = os.path.join(HERE, 'web', 'vendor')
 PAGE = os.path.join(HERE, 'dist', 'index.html')
+SITE = 'https://colonization-re.github.io/win-patches/'
 WEB_FIELDS = ('name', 'kind', 'title', 'why', 'known_limits', 'test', 'status', 'target')
+
+
+def version():
+    v = open(os.path.join(HERE, 'VERSION')).read().strip()
+    if not re.fullmatch(r'\d+\.\d+\.\d+', v):
+        raise SystemExit(f'build: VERSION is {v!r}, not MAJOR.MINOR.PATCH')
+    return v
 
 
 def check_manifests(patches):
@@ -76,6 +86,24 @@ def ips(p):
     return bytes(rec + b'EOF')
 
 
+def notes(patches):
+    """The release body. GitHub appends the commit list after it."""
+    target = next(iter(patches.values()))['target']['sha256']
+    rows = '\n'.join(f'| **{p["title"]}** `{p["name"]}` | {p["kind"]} | {p["status"]} |'
+                     for p in patches.values())
+    return f"""Patch your own `COLONIZE.EXE` in the browser at <{SITE}>, which now serves this \
+release. `win-patches.html` below is the same page: save it and it works offline.
+
+| patch | kind | status |
+| --- | --- | --- |
+{rows}
+
+For the updated 1995 release, SHA-256 `{target}`. The page and `patch.py` (in the source \
+archive) check your file before they change it. The `.ips` files do not, so check its \
+SHA-256 first.
+"""
+
+
 def page(patches):
     pin = json.load(open(os.path.join(VENDOR, 'col-css.json')))
     css = open(os.path.join(VENDOR, pin['asset']), 'rb').read()
@@ -88,6 +116,7 @@ def page(patches):
             for p in patches.values()]
     html = open(TEMPLATE).read()
     for token, value in (('/*COL_CSS*/', css.decode()),
+                         ('/*VERSION*/', json.dumps(version())),
                          ('/*PATCHES*/', json.dumps(data, separators=(',', ':')))):
         if html.count(token) != 1:
             raise SystemExit(f'build: the template must hold {token} exactly once')
@@ -99,8 +128,12 @@ def main(argv=None):
     ap = argparse.ArgumentParser(description=__doc__,
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument('--check', action='store_true', help='change nothing; fail if stale')
+    ap.add_argument('--notes', action='store_true', help='print the release notes')
     a = ap.parse_args(argv)
     patches = patch.load(patch.PATCHES)
+    if a.notes:
+        print(notes(patches), end='')
+        return 0
     problems = check_manifests(patches)
     want = {os.path.join(IPS_DIR, n + '.ips'): ips(p) for n, p in patches.items()}
     want[PAGE] = page(patches)

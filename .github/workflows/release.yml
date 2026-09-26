@@ -1,0 +1,84 @@
+# Release a version, and only then publish it as the site.
+#
+#   echo 0.0.2 > VERSION && python3 build.py && git commit -am "Release 0.0.2"
+#   git tag v0.0.2 && git push origin main v0.0.2
+#
+#   https://colonization-re.github.io/win-patches/    the latest release's page
+#
+# The site is dist/ exactly as committed at the tag, after build.py --check has proved
+# it matches a fresh build, so the page players use is the file in the repository.
+# The release carries the same page and the IPS files. These asset names stay fixed,
+# so .../releases/latest/download/win-patches.html always works:
+#
+#   win-patches.html  <patch>.ips  SHA256SUMS.txt
+name: release
+
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Existing tag to release and deploy again, e.g. v0.0.1. The site shows whichever tag ran last."
+        required: true
+
+permissions:
+  contents: read
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    env:
+      TAG: ${{ inputs.tag || github.ref_name }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.tag || github.ref }}
+      - name: the tag is the committed VERSION
+        run: |
+          want="v$(cat VERSION)"
+          if [ "$TAG" != "$want" ]; then
+            echo "::error::tag $TAG, but VERSION at that commit says $want"
+            exit 1
+          fi
+      - name: nasm, to re-assemble code sites
+        run: sudo apt-get update && sudo apt-get install -y nasm
+      - name: manifests consistent, generated files current
+        run: python3 build.py --check
+      - name: assets
+        run: |
+          mkdir release
+          cp dist/index.html release/win-patches.html
+          cp ips/*.ips release/
+          (cd release && sha256sum * > SHA256SUMS.txt)
+          python3 build.py --notes > notes.md
+      - name: publish the release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ env.TAG }}
+          name: ${{ env.TAG }}
+          body_path: notes.md
+          generate_release_notes: true
+          files: release/*
+      - name: package dist/ for Pages
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist/
+
+  deploy:
+    needs: release
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    permissions:
+      pages: write
+      id-token: write
+    concurrency:
+      group: pages
+      cancel-in-progress: false
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

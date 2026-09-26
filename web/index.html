@@ -44,6 +44,7 @@
       <div><dt>Patches</dt><dd id="count">–</dd></div>
       <div><dt>For</dt><dd>the updated 1995 release</dd></div>
       <div><dt>SHA-256</dt><dd class="col-mono" id="target">–</dd></div>
+      <div><dt>Release</dt><dd class="col-mono"><a id="version">–</a></dd></div>
     </dl>
   </div>
 
@@ -86,6 +87,7 @@
 
 <script>
 "use strict";
+const VERSION = /*VERSION*/;
 const PATCHES = /*PATCHES*/;
 const TARGET = PATCHES[0].target.sha256;
 const KIND = { fix: "col-badge--ok", feature: "col-badge--brand", qol: "col-badge--line" };
@@ -271,6 +273,8 @@ try { theme(localStorage.getItem("wp-theme") || "auto"); } catch (e) { theme("au
 
 $("count").textContent = PATCHES.length;
 $("target").textContent = TARGET.slice(0, 16) + "…";
+$("version").textContent = "v" + VERSION;
+$("version").href = "https://github.com/colonization-re/win-patches/releases/tag/v" + VERSION;
 renderList();
 </script>
 </body>

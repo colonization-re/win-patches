@@ -33,9 +33,6 @@ explanation. Don't bring over evidence paths, tools or anything else from win-de
   enforces it.
 - `ips/` and `dist/index.html` are **generated**; run `python3 build.py`, never hand-edit
   them. `build.py --check` (CI) fails when they are stale.
-- Every push to `main` that passes the check publishes `dist/` to
-  <https://colonization-re.github.io/win-patches/> as committed, so the page players use
-  is always the file in the repo.
 - `web/vendor/col.css` is [web-ui](https://github.com/colonization-re/web-ui) pinned by
   `col-css.json`. Don't edit it. It is the page's stylesheet: use a `col-` class where one
   exists, and namespace the few page-local styles in `web/index.html` `wp-`. To move the
@@ -46,6 +43,22 @@ explanation. Don't bring over evidence paths, tools or anything else from win-de
   CSS, data and scripts inline.
 - **Keep `status` honest.** "Seen in play" means a person saw it in the running game.
   Emulator checks and byte checks are not that.
+
+## Releasing
+
+The site, <https://colonization-re.github.io/win-patches/>, changes only on a release.
+Pushing to `main` publishes nothing.
+
+```sh
+echo 0.0.2 > VERSION && python3 build.py        # the page shows the version
+git commit -am "Release 0.0.2"
+git tag v0.0.2 && git push origin main v0.0.2
+```
+
+`release.yml` refuses a tag that isn't `v` + `VERSION` at that commit. It runs
+`build.py --check`, then publishes the release with `win-patches.html`, the IPS files
+and `SHA256SUMS.txt`. Only after that does it deploy `dist/` to Pages as committed. Keep
+those asset names: `releases/latest/download/win-patches.html` depends on them.
 
 ## Before committing a patch change
 
