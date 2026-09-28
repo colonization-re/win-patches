@@ -3,8 +3,8 @@
 ;
 ;   nasm -f bin -o water-cycling.bin patches/water-cycling.asm
 ;
-; tools/patch_exe.py verify assembles this file and requires the result to equal the
-; manifest's `new` bytes, so the source and the patch cannot drift apart.
+; build.py --check and patch.py verify assemble this file and require the result to
+; equal the manifest's `new` bytes, so the source and the patch cannot drift apart.
 ;
 ; WHAT IT DOES. GameBrains_DoHuman's idle phase toggles the cursor blink every 25
 ; ticks (0.42 s) and calls MiniWin_HighlightActiveUnit from both of its branches. The
