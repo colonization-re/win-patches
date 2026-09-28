@@ -17,8 +17,16 @@
 .wp-patch { display: grid; gap: 6px; padding: 14px 0; border-top: var(--bw) solid var(--rule); }
 .wp-patch:first-of-type { border-top: 0; padding-top: 4px; }
 .wp-patch p { margin: 0; }
+.wp-patch .col-check { flex: 1 1 260px; min-width: 0; }
+.wp-patch-title { min-width: 0; overflow-wrap: anywhere; }
+.wp-patch-info { flex: 0 0 auto; }
 .wp-why { white-space: pre-line; }
 .wp-hash { overflow-wrap: anywhere; }
+#details-modal { max-height: 92vh; }
+#details-body { max-height: min(66vh, 620px); overflow: auto; }
+.wp-modal-section + .wp-modal-section { margin-top: 18px; padding-top: 16px; border-top: var(--bw) solid var(--rule); }
+.wp-modal-section h4 { margin: 0 0 8px; }
+.wp-modal-section p + p { margin-top: 10px; }
 </style>
 </head>
 <body class="col-ruled">
@@ -67,6 +75,16 @@
 
 </main>
 
+<dialog class="col-dialog" id="details-modal">
+  <div class="col-dialog-head">
+    <h3 id="details-title"></h3>
+  </div>
+  <div class="col-dialog-body" id="details-body"></div>
+  <div class="col-dialog-foot">
+    <button class="col-btn col-btn--ghost" id="details-close" type="button">Close</button>
+  </div>
+</dialog>
+
 <script>
 "use strict";
 const VERSION = /*VERSION*/;
@@ -100,6 +118,50 @@ function state(bytes, p) {
   return "partial";
 }
 
+function prose(lines) {
+  return lines.join("\n").split(/\n\s*\n/)
+    .map((para) => para.replace(/\n/g, " ")).join("\n\n");
+}
+
+function para(text, className) {
+  const p = document.createElement("p");
+  p.className = className || "col-dim";
+  p.textContent = text;
+  return p;
+}
+
+function section(title) {
+  const s = document.createElement("section");
+  s.className = "wp-modal-section";
+  const h = document.createElement("h4");
+  h.textContent = title;
+  s.append(h);
+  return s;
+}
+
+function openDetails(p) {
+  const st = states[p.name];
+  $("details-title").textContent = p.title;
+  const body = $("details-body");
+  body.textContent = "";
+
+  const player = section("What this feature does");
+  player.append(para(p.kind + (st ? " · " + { original: "not in your file",
+    applied: "already in your file", mismatch: "does not fit this file",
+    partial: "half applied" }[st] : ""), "col-meta"));
+  player.append(para("How to test: " + p.test.join(" ")));
+  if (p.known_limits) player.append(para("Limits: " + p.known_limits.join(" ")));
+
+  const technical = section("How does it work? (technical details)");
+  const why = para(prose(p.why));
+  why.className = "wp-why col-dim";
+  technical.append(why);
+  if (p.status) technical.append(para("Status: " + p.status, "col-meta"));
+
+  body.append(player, technical);
+  $("details-modal").showModal();
+}
+
 function renderList() {
   const box = $("patches");
   box.textContent = "";
@@ -119,41 +181,20 @@ function renderList() {
     cb.checked = !cb.disabled;
     cb.addEventListener("change", plan);
     const title = document.createElement("span");
+    title.className = "wp-patch-title";
     const strong = document.createElement("strong");
     strong.textContent = p.title;
     title.append(strong);
     label.append(cb, title);
-    head.append(label);
-    const more = document.createElement("details");
-    more.className = "col-disclosure";
-    const sum = document.createElement("summary");
-    sum.textContent = "Details";
-    more.append(sum);
-    const meta = document.createElement("p");
-    meta.className = "col-meta";
-    meta.textContent = p.kind;
-    if (st) {
-      meta.textContent += " · " + { original: "not in your file", applied: "already in your file",
-                                    mismatch: "does not fit this file", partial: "half applied" }[st];
-    }
-    more.append(meta);
-    const test = document.createElement("p");
-    test.className = "col-dim";
-    test.textContent = "How to test: " + p.test.join(" ");
-    more.append(test);
-    const why = document.createElement("p");
-    why.className = "wp-why col-dim";
-    // manifest lines are wrapped prose; an empty line separates paragraphs
-    why.textContent = p.why.join("\n").split(/\n\s*\n/)
-      .map((para) => para.replace(/\n/g, " ")).join("\n\n");
-    more.append(why);
-    if (p.known_limits) {
-      const lim = document.createElement("p");
-      lim.className = "col-dim";
-      lim.textContent = "Limits: " + p.known_limits.join(" ");
-      more.append(lim);
-    }
-    row.append(head, more);
+    const details = document.createElement("button");
+    details.type = "button";
+    details.className = "col-btn col-btn--ghost col-btn--sm col-btn--icon wp-patch-info";
+    details.setAttribute("aria-label", "Details for " + p.name);
+    details.title = "Details";
+    details.textContent = "?";
+    details.addEventListener("click", () => openDetails(p));
+    head.append(label, details);
+    row.append(head);
     box.append(row);
   }
 }
@@ -239,6 +280,10 @@ drop.addEventListener("dragleave", () => drop.classList.remove("is-over"));
 drop.addEventListener("drop", (e) => {
   e.preventDefault(); drop.classList.remove("is-over");
   if (e.dataTransfer.files[0]) load(e.dataTransfer.files[0]);
+});
+$("details-close").addEventListener("click", () => $("details-modal").close());
+$("details-modal").addEventListener("click", (e) => {
+  if (e.target === $("details-modal")) $("details-modal").close();
 });
 
 renderList();
