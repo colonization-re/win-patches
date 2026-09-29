@@ -27,12 +27,19 @@
 .wp-modal-section + .wp-modal-section { margin-top: 18px; padding-top: 16px; border-top: var(--bw) solid var(--rule); }
 .wp-modal-section h4 { margin: 0 0 8px; }
 .wp-modal-section p + p { margin-top: 10px; }
+.wp-action-icon { flex: 0 0 auto; }
+@media (max-width:760px) {
+  .wp-nav { order: 3; width: 100%; }
+}
 </style>
 </head>
 <body class="col-ruled">
 <div class="col-bar">
   <div class="col-bar-in">
-    <a class="col-brand" href="https://github.com/colonization-re/win-patches"><span class="col-brand-mark"></span> win-patches</a>
+    <a class="col-brand" href="./" aria-label="win-patches home"><span class="col-brand-mark" aria-hidden="true"></span> win-patches</a>
+    <nav class="col-row col-push wp-nav" aria-label="Project links">
+      <a class="col-btn col-btn--quiet col-btn--sm" href="https://github.com/colonization-re/win-patches">GitHub <svg class="wp-action-icon" aria-hidden="true" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6"></path><path d="M10 14 21 3"></path><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path></svg></a>
+    </nav>
   </div>
 </div>
 
